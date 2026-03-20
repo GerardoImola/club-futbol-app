@@ -53,6 +53,7 @@ export class ResultadosComponent implements OnInit, OnDestroy {
   };
 
   async ngOnInit() {
+    await this.resultadosStorage.hydrateFromRemote();
     await this.cargarFixtureCanalense();
     this.cargarPartidos();
     this.rebuildVista();
@@ -115,12 +116,11 @@ export class ResultadosComponent implements OnInit, OnDestroy {
   }
 
   private cargarPartidos() {
-    this.resultadosStorage.ensureInitialSeed();
     this.partidos = this.resultadosStorage.getPartidos();
   }
 
-  private guardarPartidos() {
-    this.resultadosStorage.savePartidos(this.partidos);
+  private async guardarPartidos() {
+    await this.resultadosStorage.savePartidos(this.partidos);
   }
 
   private nextId(): number {
@@ -163,7 +163,7 @@ export class ResultadosComponent implements OnInit, OnDestroy {
     this.editingPartido = null;
   }
 
-  guardar() {
+  async guardar() {
     if (!this.form.local.trim() || !this.form.visitante.trim()) return;
 
     if (this.editingPartido) {
@@ -199,24 +199,24 @@ export class ResultadosComponent implements OnInit, OnDestroy {
       });
     }
 
-    this.guardarPartidos();
+    await this.guardarPartidos();
     this.rebuildVista();
     this.cerrarForm();
   }
 
-  eliminar(p: Partido) {
+  async eliminar(p: Partido) {
     if (confirm('¿Eliminar este partido?')) {
       this.partidos = this.partidos.filter((x) => x.id !== p.id);
-      this.guardarPartidos();
+      await this.guardarPartidos();
       this.rebuildVista();
       this.cerrarForm();
     }
   }
 
-  cargarFixture() {
+  async cargarFixture() {
     if (confirm('¿Cargar el fixture completo? Se reemplazarán los partidos actuales.')) {
       this.partidos = PARTIDOS_INICIALES.map((p, i) => ({ ...p, id: i + 1 }));
-      this.guardarPartidos();
+      await this.guardarPartidos();
       this.rebuildVista();
     }
   }

@@ -39,9 +39,9 @@ Los socios pueden registrarse e ingresar para ver su número de socio, cuotas pa
    supabaseUrl: 'https://xxx.supabase.co',
    supabaseKey: 'eyJ...'
    ```
-4. En Supabase **SQL Editor**, ejecutá **`supabase-setup-completo.sql`**
-5. (Opcional) **`supabase-fixture.sql`**: guarda el calendario en la tabla `fixture_partidos`; la página Fixture lo lee desde la base (si falla o está vacía, usa el archivo local). (crea tablas `socios` y `cuotas`, políticas, trigger y completa datos de usuarios ya registrados).  
-   Si preferís por partes: `supabase-schema.sql` y luego `supabase-registro-trigger.sql`.
+4. En Supabase **SQL Editor**, ejecutá **`supabase-setup-completo.sql`** (tablas `socios` / `cuotas`, políticas, trigger, etc.). Si preferís por partes: `supabase-schema.sql` y luego `supabase-registro-trigger.sql`.
+5. (Opcional) **`supabase-fixture.sql`**: calendario en `fixture_partidos`; la app lo lee desde la base (si falla o está vacía, usa datos locales).
+6. **`supabase-resultados.sql`**: guarda **marcadores y estados** en `partido_resultados` para que se vean igual en PC, Vercel y celular. La clave por defecto en la tabla `resultados_admin_secret` es `cac2025`; debe coincidir con `adminPassword` en `environment.ts` / `environment.prod.ts`. Si cambiás la contraseña del admin, ejecutá: `update public.resultados_admin_secret set secret = 'tu_clave' where id = 1;`
 
 ### Si al registrarte ves "Failed to fetch"
 
@@ -65,9 +65,9 @@ Solo vos podés modificar los resultados. Los demás usuarios solo ven la inform
 
 1. En la página de Resultados, tocá **"Soy admin"**
 2. Ingresá tu contraseña (por defecto: `cac2025`)
-3. Cambiá la contraseña en `src/environments/environment.ts` y `environment.prod.ts` antes de publicar
+3. Cambiá la contraseña en `src/environments/environment.ts` y `environment.prod.ts` antes de publicar, y actualizá **`resultados_admin_secret`** en Supabase (ver paso 6 arriba).
 
-La sesión se mantiene mientras tengas la pestaña abierta. Al cerrar el navegador, tenés que volver a ingresar.
+Cuando guardás un resultado (Resultados o **Guardar final** en Fixture), la app **sincroniza la lista completa** con Supabase si estás logueado como admin. La sesión admin dura mientras la pestaña esté abierta (`sessionStorage`).
 
 ## Personalización
 
@@ -79,7 +79,7 @@ clubName = 'Nombre de tu club';
 
 ## Próximos pasos
 
-- Conectar con backend/API para noticias, resultados y plantel
+- Backend/API para noticias y plantel (los resultados ya usan Supabase si ejecutaste `supabase-resultados.sql`)
 - Integrar pasarela de pagos (Mercado Pago, Stripe, etc.) en Mi Cuenta
 - Subir fotos reales a la galería
 - Sistema de login para socios

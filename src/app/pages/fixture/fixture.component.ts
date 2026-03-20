@@ -40,7 +40,7 @@ export class FixtureComponent implements OnInit {
 
   async ngOnInit() {
     this.cargando = true;
-    this.resultadosStorage.ensureInitialSeed();
+    await this.resultadosStorage.hydrateFromRemote();
     const res = await this.fixtureService.loadFixture();
     this.fixture = res.partidos;
     this.aviso = res.aviso;
@@ -79,11 +79,11 @@ export class FixtureComponent implements OnInit {
     return !!x && (x.estado === 'finalizado' || x.estado === 'en-vivo');
   }
 
-  guardarFinal(p: PartidoFixture): void {
+  async guardarFinal(p: PartidoFixture): Promise<void> {
     const k = this.rowKey(p);
     const d = this.drafts[k];
     if (!d) return;
-    this.resultadosStorage.upsertResultadoFinal(p, d.gl, d.gv);
+    await this.resultadosStorage.upsertResultadoFinal(p, d.gl, d.gv);
     this.refreshPartidos();
     const partido = this.partidoPara(p);
     this.drafts[k] = {

@@ -128,3 +128,5 @@ where not exists (
     and c.anio = extract(year from (now() at time zone 'America/Argentina/Buenos_Aires'))::int
 )
 on conflict (socio_id, mes, anio) do nothing;
+
+-- Resultados de partidos (compartidos entre dispositivos): ejecutá también supabase-resultados.sql
