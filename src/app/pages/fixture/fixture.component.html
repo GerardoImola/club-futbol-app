@@ -1,27 +1,8 @@
 <h1>Fixture</h1>
 <p class="subtitle">
   Primera División · Calendario y posiciones
-  @if (auth.isAdmin() && vista === 'fixture') {
-    <span class="hint-admin">Podés cargar el resultado final de cada partido jugado abajo.</span>
-  }
+ 
 </p>
-
-@if (auth.isAdmin() && vista === 'fixture' && !cargando) {
-  <p class="admin-fixture-acciones">
-    <button
-      type="button"
-      class="btn-publicar-fixture"
-      (click)="publicarCalendarioEnSupabase()"
-      [disabled]="publicandoFixture || fixture.length === 0"
-    >
-      {{ publicandoFixture ? 'Publicando…' : 'Publicar calendario en Supabase' }}
-    </button>
-    <span class="hint-publicar-fixture">
-      Sube a la nube el fixture que ves ahora (mismo orden). Ejecutá antes
-      <code>supabase-fixture-rpc.sql</code> en el SQL Editor (después de <code>supabase-resultados.sql</code>).
-    </span>
-  </p>
-}
 
 @if (aviso) {
   <p class="aviso">{{ aviso }}</p>

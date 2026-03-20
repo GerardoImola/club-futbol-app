@@ -135,8 +135,19 @@
       }
       @if (form.estado === 'por-jugar') {
         <div class="form-group">
-          <label>Fecha / Hora</label>
-          <input type="text" [(ngModel)]="form.fecha" name="fecha" placeholder="Ej: Dom 15:00, Sáb 18:00">
+          <label>Fecha (como en el fixture, ej. Dom 22/03)</label>
+          <input type="text" [(ngModel)]="form.fecha" name="fecha" placeholder="Ej: Dom 22/03">
+        </div>
+      }
+      @if (form.estado === 'en-vivo' || form.estado === 'finalizado') {
+        <div class="form-group">
+          <label>Fecha del calendario</label>
+          <input
+            type="text"
+            [(ngModel)]="form.fecha"
+            name="fechaCal"
+            placeholder="Ej: Dom 22/03 — debe coincidir con el fixture"
+          >
         </div>
       }
       <div class="form-actions">

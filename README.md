@@ -47,6 +47,8 @@ Los socios pueden registrarse e ingresar para ver su número de socio, cuotas pa
 
 **Posiciones:** la tabla de posiciones **no se guarda en la base**: se calcula en el navegador con el fixture + los resultados. Con fixture y resultados sincronizados en Supabase, todos ven la misma tabla.
 
+**Error `DELETE requires a WHERE clause` al guardar:** ejecutá **`supabase-rpc-delete-where-fix.sql`** en el SQL Editor (actualiza las funciones RPC). Los archivos `supabase-resultados.sql` y `supabase-fixture-rpc.sql` en el repo ya traen el arreglo (`DELETE ... WHERE true`).
+
 ### Si al registrarte ves "Failed to fetch"
 
 - Reactivá el proyecto en [Supabase Dashboard](https://supabase.com/dashboard) (los free se **pausan** si no los usás un tiempo).

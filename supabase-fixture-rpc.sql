@@ -23,7 +23,7 @@ begin
     raise exception 'Unauthorized' using errcode = '42501';
   end if;
 
-  delete from public.fixture_partidos;
+  delete from public.fixture_partidos where true;
 
   insert into public.fixture_partidos (fecha, local, visitante, orden)
   select

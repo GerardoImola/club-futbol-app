@@ -68,7 +68,8 @@ begin
     raise exception 'Unauthorized' using errcode = '42501';
   end if;
 
-  delete from public.partido_resultados;
+  -- Algunos proyectos (p. ej. reglas de Supabase) rechazan DELETE sin WHERE
+  delete from public.partido_resultados where true;
 
   insert into public.partido_resultados (
     legacy_id, local, visitante, fecha, goles_local, goles_visitante, estado, minuto, live_started_at

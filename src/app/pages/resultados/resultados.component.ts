@@ -166,6 +166,9 @@ export class ResultadosComponent implements OnInit, OnDestroy {
   async guardar() {
     if (!this.form.local.trim() || !this.form.visitante.trim()) return;
 
+    /** Misma cadena que en el fixture (ej. Dom 22/03); si falta, no coincide con la tarjeta del calendario */
+    const fechaVal = this.form.fecha?.trim() || undefined;
+
     if (this.editingPartido) {
       const p = this.partidos.find(x => x.id === this.editingPartido!.id);
       if (p) {
@@ -182,7 +185,7 @@ export class ResultadosComponent implements OnInit, OnDestroy {
           p.minuto = undefined;
           p.liveStartedAt = undefined;
         }
-        p.fecha = this.form.estado === 'por-jugar' ? this.form.fecha : undefined;
+        p.fecha = fechaVal ?? p.fecha;
       }
     } else {
       const liveStartedAt = this.form.estado === 'en-vivo' ? Date.now() : undefined;
@@ -195,7 +198,7 @@ export class ResultadosComponent implements OnInit, OnDestroy {
         estado: this.form.estado,
         minuto: this.form.estado === 'en-vivo' ? this.form.minuto : undefined,
         liveStartedAt,
-        fecha: this.form.estado === 'por-jugar' ? this.form.fecha : undefined
+        fecha: fechaVal
       });
     }
 
