@@ -32,10 +32,13 @@ export class FixtureComponent implements OnInit {
   /** Pestaña: partidos o tabla de posiciones */
   vista: 'fixture' | 'posiciones' = 'fixture';
 
+  /** Evita doble clic al publicar fixture */
+  publicandoFixture = false;
+
   constructor(
-    private fixtureService: FixtureService,
+    public readonly fixtureService: FixtureService,
     public auth: AuthService,
-    private resultadosStorage: ResultadosStorageService
+    public readonly resultadosStorage: ResultadosStorageService
   ) {}
 
   async ngOnInit() {
@@ -115,5 +118,19 @@ export class FixtureComponent implements OnInit {
 
   setVista(v: 'fixture' | 'posiciones'): void {
     this.vista = v;
+  }
+
+  /** Admin: sube el calendario actual (lo que ves en pantalla) a Supabase. */
+  async publicarCalendarioEnSupabase(): Promise<void> {
+    if (!this.auth.isAdmin() || this.fixture.length === 0) return;
+    this.publicandoFixture = true;
+    const ok = await this.fixtureService.syncFixtureToRemote(this.fixture);
+    if (ok) {
+      const res = await this.fixtureService.loadFixture();
+      this.fixture = res.partidos;
+      this.aviso = res.aviso;
+      this.initDrafts();
+    }
+    this.publicandoFixture = false;
   }
 }

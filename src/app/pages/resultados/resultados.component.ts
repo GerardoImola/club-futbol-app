@@ -39,7 +39,7 @@ export class ResultadosComponent implements OnInit, OnDestroy {
   constructor(
     public auth: AuthService,
     private fixtureService: FixtureService,
-    private resultadosStorage: ResultadosStorageService
+    public readonly resultadosStorage: ResultadosStorageService
   ) {}
 
   form = {

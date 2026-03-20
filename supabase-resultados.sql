@@ -17,8 +17,8 @@ comment on table public.resultados_admin_secret is
 
 alter table public.resultados_admin_secret enable row level security;
 
-revoke all on public.resultados_admin_secret from public;
-revoke all on public.resultados_admin_secret from anon, authenticated;
+revoke all on table public.resultados_admin_secret from anon, authenticated;
+revoke all on table public.resultados_admin_secret from public;
 
 create table if not exists public.partido_resultados (
   legacy_id integer not null unique,
@@ -42,6 +42,9 @@ create policy "Resultados lectura pública"
   for select
   to anon, authenticated
   using (true);
+
+-- Permisos explícitos (sin esto PostgREST puede devolver 401/permission denied con RLS)
+grant select on table public.partido_resultados to anon, authenticated, service_role;
 
 -- Sin políticas de escritura directa: solo la RPC (SECURITY DEFINER)
 

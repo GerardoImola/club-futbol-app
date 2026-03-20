@@ -6,8 +6,41 @@
   }
 </p>
 
+@if (auth.isAdmin() && vista === 'fixture' && !cargando) {
+  <p class="admin-fixture-acciones">
+    <button
+      type="button"
+      class="btn-publicar-fixture"
+      (click)="publicarCalendarioEnSupabase()"
+      [disabled]="publicandoFixture || fixture.length === 0"
+    >
+      {{ publicandoFixture ? 'Publicando…' : 'Publicar calendario en Supabase' }}
+    </button>
+    <span class="hint-publicar-fixture">
+      Sube a la nube el fixture que ves ahora (mismo orden). Ejecutá antes
+      <code>supabase-fixture-rpc.sql</code> en el SQL Editor (después de <code>supabase-resultados.sql</code>).
+    </span>
+  </p>
+}
+
 @if (aviso) {
   <p class="aviso">{{ aviso }}</p>
+}
+
+@if (resultadosStorage.remoteLoadError(); as errRemoto) {
+  <p class="aviso aviso-error-nube" role="alert">{{ errRemoto }}</p>
+}
+
+@if (auth.isAdmin() && resultadosStorage.lastSyncError(); as errSync) {
+  <p class="aviso aviso-error-nube" role="alert">{{ errSync }}</p>
+}
+
+@if (fixtureService.fixtureLoadError(); as errFx) {
+  <p class="aviso aviso-error-nube" role="alert">{{ errFx }}</p>
+}
+
+@if (auth.isAdmin() && fixtureService.fixtureSyncError(); as errFxSync) {
+  <p class="aviso aviso-error-nube" role="alert">{{ errFxSync }}</p>
 }
 
 @if (cargando) {
@@ -42,7 +75,10 @@
     <div class="vista-panel" role="tabpanel" aria-labelledby="tab-posiciones">
       <section class="bloque-posiciones" aria-labelledby="titulo-posiciones">
         <h2 id="titulo-posiciones" class="posiciones-titulo">Tabla de posiciones</h2>
-        
+        <p class="posiciones-hint">
+          Se calcula sola con el calendario y los resultados guardados en la nube (no tiene tabla propia ni botón de guardar).
+        </p>
+
         @if (!hayPartidosEnTabla) {
           <p class="posiciones-vacia">
             Todavía no hay partidos con resultado. Cuando se carguen marcadores (desde Fixture o desde Resultados), la tabla se completará automáticamente.

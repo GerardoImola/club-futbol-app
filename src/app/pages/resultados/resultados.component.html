@@ -1,14 +1,19 @@
 <h1>Resultados en vivo</h1>
 <p class="subtitle">
   Primera División · Partidos de Club Atlético Canalense
-  @if (auth.isAdmin()) {
-    · Cargá los resultados manualmente
-    <button type="button" class="btn-fixture" (click)="cargarFixture()">Cargar fixture local</button>
-  }
+  
 </p>
 
 @if (avisoFixture) {
   <p class="aviso-fixture">{{ avisoFixture }}</p>
+}
+
+@if (resultadosStorage.remoteLoadError(); as errRemoto) {
+  <p class="aviso-error-nube" role="alert">{{ errRemoto }}</p>
+}
+
+@if (auth.isAdmin() && resultadosStorage.lastSyncError(); as errSync) {
+  <p class="aviso-error-nube" role="alert">{{ errSync }}</p>
 }
 
 @if (cargandoFixture) {

@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
+import { PostgrestError } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { SupabaseService } from './supabase.service';
@@ -36,6 +37,35 @@ function rowToPartido(row: PartidoResultadoRow): Partido {
   };
 }
 
+function formatRemoteLoadError(err: PostgrestError): string {
+  const msg = (err.message || '').toLowerCase();
+  const code = err.code || '';
+  if (
+    code === 'PGRST205' ||
+    code === '42P01' ||
+    msg.includes('does not exist') ||
+    msg.includes('schema cache')
+  ) {
+    return 'No se encontró la tabla partido_resultados en Supabase. Ejecutá supabase-resultados.sql (o supabase-resultados-grants.sql) en el SQL Editor del proyecto.';
+  }
+  if (
+    code === '42501' ||
+    msg.includes('permission denied') ||
+    msg.includes('row-level security')
+  ) {
+    return 'Sin permiso para leer resultados. Ejecutá de nuevo supabase-resultados.sql o el archivo supabase-resultados-grants.sql.';
+  }
+  return err.message || 'No se pudieron cargar los resultados desde la nube.';
+}
+
+function formatSyncError(err: PostgrestError): string {
+  const msg = err.message || '';
+  if (msg.includes('Unauthorized') || msg.includes('42501')) {
+    return 'No se pudo guardar en la nube: contraseña de admin distinta del secreto en Supabase (tabla resultados_admin_secret) o sesión admin no válida.';
+  }
+  return msg || 'No se pudo sincronizar con Supabase.';
+}
+
 function partidoToRpcPayload(p: Partido) {
   return {
     legacy_id: p.id,
@@ -52,6 +82,11 @@ function partidoToRpcPayload(p: Partido) {
 
 @Injectable({ providedIn: 'root' })
 export class ResultadosStorageService {
+  /** Error al leer partido_resultados (tabla faltante, RLS, red). */
+  readonly remoteLoadError = signal<string | null>(null);
+  /** Último error al sincronizar (solo intenta si hay sesión admin). */
+  readonly lastSyncError = signal<string | null>(null);
+
   constructor(
     private supabase: SupabaseService,
     private auth: AuthService
@@ -95,6 +130,7 @@ export class ResultadosStorageService {
   async hydrateFromRemote(): Promise<void> {
     const client = this.supabase.client;
     if (!this.supabase.isConfigured || !client) {
+      this.remoteLoadError.set(null);
       this.ensureInitialSeed();
       return;
     }
@@ -106,13 +142,22 @@ export class ResultadosStorageService {
       )
       .order('legacy_id', { ascending: true });
 
-    if (error || !data?.length) {
+    if (error) {
+      this.remoteLoadError.set(formatRemoteLoadError(error));
       this.ensureInitialSeed();
       return;
     }
 
-    const partidos = (data as PartidoResultadoRow[]).map(rowToPartido);
-    this.saveLocalOnly(partidos);
+    this.remoteLoadError.set(null);
+
+    if (data?.length) {
+      const partidos = (data as PartidoResultadoRow[]).map(rowToPartido);
+      this.saveLocalOnly(partidos);
+      return;
+    }
+
+    // Tabla existe y está vacía: no borrar localStorage; solo seed si no hay nada guardado
+    this.ensureInitialSeed();
   }
 
   async savePartidos(partidos: Partido[]): Promise<void> {
@@ -133,8 +178,13 @@ export class ResultadosStorageService {
     });
 
     if (error) {
-      console.error('No se pudo sincronizar resultados con Supabase:', error.message);
+      const text = formatSyncError(error);
+      this.lastSyncError.set(text);
+      console.error('No se pudo sincronizar resultados con Supabase:', error.message, error);
+      return;
     }
+
+    this.lastSyncError.set(null);
   }
 
   findByFixture(f: PartidoFixture): Partido | undefined {

@@ -130,3 +130,4 @@ where not exists (
 on conflict (socio_id, mes, anio) do nothing;
 
 -- Resultados de partidos (compartidos entre dispositivos): ejecutá también supabase-resultados.sql
+-- Calendario editable desde la app (admin): después supabase-fixture.sql + supabase-fixture-rpc.sql

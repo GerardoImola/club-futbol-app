@@ -74,3 +74,9 @@ on conflict (orden) do update set
   fecha = excluded.fecha,
   local = excluded.local,
   visitante = excluded.visitante;
+
+-- Permisos de lectura para la API (evita errores con RLS)
+grant select on table public.fixture_partidos to anon, authenticated, service_role;
+
+-- Para publicar el calendario desde la app (admin): ejecutá supabase-fixture-rpc.sql
+-- después de supabase-resultados.sql (usa resultados_admin_secret).

@@ -42,6 +42,10 @@ Los socios pueden registrarse e ingresar para ver su número de socio, cuotas pa
 4. En Supabase **SQL Editor**, ejecutá **`supabase-setup-completo.sql`** (tablas `socios` / `cuotas`, políticas, trigger, etc.). Si preferís por partes: `supabase-schema.sql` y luego `supabase-registro-trigger.sql`.
 5. (Opcional) **`supabase-fixture.sql`**: calendario en `fixture_partidos`; la app lo lee desde la base (si falla o está vacía, usa datos locales).
 6. **`supabase-resultados.sql`**: guarda **marcadores y estados** en `partido_resultados` para que se vean igual en PC, Vercel y celular. La clave por defecto en la tabla `resultados_admin_secret` es `cac2025`; debe coincidir con `adminPassword` en `environment.ts` / `environment.prod.ts`. Si cambiás la contraseña del admin, ejecutá: `update public.resultados_admin_secret set secret = 'tu_clave' where id = 1;`
+7. Si en el navegador falla la petición a `partido_resultados` (401 o permisos), ejecutá también **`supabase-resultados-grants.sql`** o volvé a correr `supabase-resultados.sql` completo (incluye `GRANT SELECT`). En **Supabase → Project Settings → Data API**, comprobá que las tablas del esquema `public` estén expuestas (por defecto sí).
+8. **`supabase-fixture-rpc.sql`** (después del paso 6): crea la función `sync_fixture_partidos` para **publicar el calendario desde la app** (botón en Fixture, sesión admin). Usa la misma clave que `resultados_admin_secret`. Si volvés a ejecutar **`supabase-fixture.sql`**, al final ya incluye `GRANT SELECT` sobre `fixture_partidos`.
+
+**Posiciones:** la tabla de posiciones **no se guarda en la base**: se calcula en el navegador con el fixture + los resultados. Con fixture y resultados sincronizados en Supabase, todos ven la misma tabla.
 
 ### Si al registrarte ves "Failed to fetch"
 
@@ -67,7 +71,7 @@ Solo vos podés modificar los resultados. Los demás usuarios solo ven la inform
 2. Ingresá tu contraseña (por defecto: `cac2025`)
 3. Cambiá la contraseña en `src/environments/environment.ts` y `environment.prod.ts` antes de publicar, y actualizá **`resultados_admin_secret`** en Supabase (ver paso 6 arriba).
 
-Cuando guardás un resultado (Resultados o **Guardar final** en Fixture), la app **sincroniza la lista completa** con Supabase si estás logueado como admin. La sesión admin dura mientras la pestaña esté abierta (`sessionStorage`).
+Cuando guardás un resultado (Resultados o **Guardar final** en Fixture), la app **sincroniza la lista completa** con Supabase si estás logueado como admin. En **Fixture**, el botón **Publicar calendario en Supabase** sube el calendario que ves en pantalla (necesitás haber ejecutado `supabase-fixture-rpc.sql`). La sesión admin dura mientras la pestaña esté abierta (`sessionStorage`).
 
 ## Personalización
 
