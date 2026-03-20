@@ -1,0 +1,243 @@
+h1 {
+  color: #1a472a;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+/* —— Campeón Finalísima —— */
+.album-finalisima {
+  margin-bottom: 2.5rem;
+  scroll-margin-top: 5rem;
+}
+
+.album-titulo {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1a472a;
+}
+
+.album-desc {
+  margin: 0 0 1.25rem;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.finalisima-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 600px) {
+  .finalisima-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .finalisima-grid {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+}
+
+.thumb-btn {
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #e8f0e9;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.thumb-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.thumb-btn:focus-visible {
+  outline: 3px solid #1a472a;
+  outline-offset: 2px;
+}
+
+.thumb-btn img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3/2;
+  object-fit: cover;
+  display: block;
+}
+
+/* —— Más momentos (placeholders) —— */
+.seccion-subtitulo {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a472a;
+}
+
+.mas-momentos {
+  padding-top: 0.5rem;
+  border-top: 1px solid #e0e8e1;
+}
+
+.galeria-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 480px) {
+  .galeria-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .galeria-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+.foto-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s;
+}
+
+.foto-card:hover {
+  transform: scale(1.02);
+}
+
+.foto-placeholder {
+  aspect-ratio: 4/3;
+  background: linear-gradient(135deg, #2d5a3d 0%, #1a472a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-icon {
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.foto-titulo {
+  padding: 1rem;
+  margin: 0;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+/* Lightbox (Finalísima) */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 3.5rem 4rem;
+  box-sizing: border-box;
+}
+
+.lightbox-panel {
+  position: relative;
+  max-width: min(96vw, 1200px);
+}
+
+.lightbox-img-wrap {
+  max-width: min(96vw, 1200px);
+  max-height: 85vh;
+}
+
+.lightbox-img-wrap img {
+  max-width: 100%;
+  max-height: 85vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.lightbox-cerrar {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  width: 48px;
+  height: 48px;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 8px;
+  z-index: 2;
+}
+
+.lightbox-cerrar:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 64px;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 2.5rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 8px;
+  z-index: 2;
+}
+
+.lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.lightbox-prev {
+  left: 0.5rem;
+}
+
+.lightbox-next {
+  right: 0.5rem;
+}
+
+.lightbox-counter {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 520px) {
+  .lightbox {
+    padding: 3rem 0.25rem 4rem;
+  }
+
+  .lightbox-nav {
+    width: 40px;
+    height: 52px;
+    font-size: 2rem;
+  }
+}

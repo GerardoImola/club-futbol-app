@@ -1,0 +1,105 @@
+<h1>Plantel</h1>
+<p class="subtitle">Primera división e inferiores</p>
+
+<div class="tabs" role="tablist">
+  <button
+    type="button"
+    role="tab"
+    [class.active]="categoriaSeleccionada === 'primera'"
+    (click)="seleccionarTab('primera')"
+  >
+    Primera
+  </button>
+  <button
+    type="button"
+    role="tab"
+    [class.active]="categoriaSeleccionada === 'inferiores'"
+    (click)="seleccionarTab('inferiores')"
+  >
+    Inferiores
+  </button>
+</div>
+
+@if (categoriaSeleccionada === 'primera') {
+  <section class="cuerpo-tecnico" aria-labelledby="titulo-ct">
+    <h2 id="titulo-ct" class="cuerpo-tecnico-titulo">Cuerpo técnico</h2>
+    <ul class="cuerpo-tecnico-lista">
+      <li>
+        <span class="ct-rol">Director técnico</span>
+        <span class="ct-nombre">Ezequiel Zanon</span>
+      </li>
+      <li>
+        <span class="ct-rol">Asistentes</span>
+        <span class="ct-nombre">César Torres, Alfredo Villarreal</span>
+      </li>
+      <li>
+        <span class="ct-rol">Entrenador de arqueros</span>
+        <span class="ct-nombre">Nicolás Luna</span>
+      </li>
+    </ul>
+  </section>
+
+  <h3 class="plantel-seccion-jugadores">Jugadores</h3>
+
+  <div class="plantel-grid">
+    @for (jugador of primera; track jugador.numero) {
+      <div class="jugador-card">
+        <span class="numero-camiseta">{{ jugador.numero }}</span>
+        <h4>{{ jugador.apellido }}</h4>
+        <p class="nombre-pila">{{ jugador.nombre }}</p>
+      </div>
+    }
+  </div>
+} @else {
+  @if (inferiorSeleccionadoId === null) {
+    <div class="inferiores-list">
+      @for (cat of inferioresCategorias; track cat.id) {
+        <button
+          type="button"
+          class="categoria-card categoria-card-accion"
+          (click)="abrirCategoriaInferior(cat.id)"
+        >
+          <h4>{{ cat.titulo }}</h4>
+          <p class="categoria-resumen">{{ cat.resumen }}</p>
+          <span class="categoria-ver">Ver plantel</span>
+        </button>
+      }
+    </div>
+  } @else {
+    @if (inferiorActual; as inf) {
+      <div class="inferior-detalle">
+        <button type="button" class="btn-volver-inferiores" (click)="volverListaInferiores()">
+          ← Volver a categorías
+        </button>
+
+        <h2 class="inferior-detalle-titulo">{{ inf.titulo }}</h2>
+        <p class="inferior-detalle-sub">{{ inf.resumen }}</p>
+
+        <section class="cuerpo-tecnico" [attr.aria-labelledby]="'titulo-ct-' + inf.id">
+          <h3 [id]="'titulo-ct-' + inf.id" class="cuerpo-tecnico-titulo">Cuerpo técnico</h3>
+          <ul class="cuerpo-tecnico-lista">
+            @for (linea of inf.cuerpoTecnico; track linea.rol + linea.nombres) {
+              <li>
+                <span class="ct-rol">{{ linea.rol }}</span>
+                <span class="ct-nombre">{{ linea.nombres }}</span>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <h3 class="plantel-seccion-jugadores">Jugadores</h3>
+
+        <div class="plantel-grid">
+          @for (jugador of inf.jugadores; track $index) {
+            <div class="jugador-card">
+              <span class="numero-camiseta">{{ jugador.numero }}</span>
+              <h4>{{ jugador.apellido }}</h4>
+              <p class="nombre-pila">{{ jugador.nombre }}</p>
+              <span class="jugador-dni">DNI {{ jugador.dni }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+}

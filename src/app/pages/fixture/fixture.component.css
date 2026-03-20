@@ -1,0 +1,353 @@
+.aviso {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  color: #856404;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.cargando {
+  color: #666;
+  padding: 2rem;
+  text-align: center;
+}
+
+h1 {
+  color: #1a472a;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.vista-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.25rem;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #1a472a;
+  max-width: 420px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: none;
+  background: #fff;
+  color: #1a472a;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.tab-btn + .tab-btn {
+  border-left: 2px solid #1a472a;
+}
+
+.tab-btn:hover:not(.active) {
+  background: #f0f5f0;
+}
+
+.tab-btn.active {
+  background: #1a472a;
+  color: #fff;
+}
+
+.tab-btn:focus-visible {
+  outline: 2px solid #609171;
+  outline-offset: 2px;
+  z-index: 1;
+}
+
+.vista-panel {
+  min-height: 120px;
+}
+
+.bloque-posiciones {
+  margin-bottom: 2rem;
+}
+
+.posiciones-titulo {
+  font-size: 1.15rem;
+  color: #1a472a;
+  margin: 0 0 0.35rem;
+  font-weight: 700;
+}
+
+.posiciones-leyenda {
+  font-size: 0.78rem;
+  color: #666;
+  margin: 0 0 1rem;
+  line-height: 1.4;
+}
+
+.posiciones-vacia {
+  font-size: 0.9rem;
+  color: #666;
+  background: #f5f9f6;
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  margin: 0;
+}
+
+.tabla-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.tabla-posiciones {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  background: white;
+}
+
+.tabla-posiciones thead {
+  background: #1a472a;
+  color: #fff;
+}
+
+.tabla-posiciones th {
+  padding: 0.55rem 0.35rem;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.tabla-posiciones th.col-eq {
+  text-align: left;
+  padding-left: 0.75rem;
+}
+
+.tabla-posiciones td {
+  padding: 0.5rem 0.35rem;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.tabla-posiciones td.col-eq {
+  text-align: left;
+  padding-left: 0.75rem;
+  font-weight: 500;
+  color: #222;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tabla-posiciones .col-pos {
+  width: 2rem;
+  color: #666;
+  font-weight: 600;
+}
+
+.tabla-posiciones .col-pts {
+  font-weight: 800;
+  color: #1a472a;
+  font-size: 0.95rem;
+}
+
+.tabla-posiciones tbody tr:hover {
+  background: #f8faf8;
+}
+
+.tabla-posiciones .fila-canalense {
+  background: #e8f5e9;
+}
+
+.tabla-posiciones .fila-canalense:hover {
+  background: #dcedc8;
+}
+
+.dg-neg {
+  color: #c62828;
+}
+
+@media (min-width: 768px) {
+  .tabla-posiciones {
+    font-size: 0.9rem;
+  }
+
+  .tabla-posiciones th,
+  .tabla-posiciones td {
+    padding: 0.65rem 0.5rem;
+  }
+
+  .tabla-posiciones td.col-eq {
+    max-width: none;
+  }
+}
+
+.fecha-section {
+  margin-bottom: 2rem;
+}
+
+.fecha-titulo {
+  font-size: 1rem;
+  color: #1a472a;
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+}
+
+.partidos-fecha {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.partido-linea {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #eee;
+  flex-wrap: wrap;
+}
+
+.partido-linea.con-resultado .goles {
+  font-weight: 700;
+  color: #1a472a;
+}
+
+.hint-admin {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.partido-linea:last-child {
+  border-bottom: none;
+}
+
+.equipo {
+  flex: 1;
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.equipo:last-child {
+  text-align: right;
+}
+
+.vs {
+  color: #999;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.marcador {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 5rem;
+  flex-shrink: 0;
+}
+
+.marcador .badges {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.badge-live {
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: #c62828;
+  color: white;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+
+.badge-final {
+  font-size: 0.65rem;
+  font-weight: 600;
+  background: #e8f5e9;
+  color: #1a472a;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+
+.goles {
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+}
+
+.sin-marcador {
+  color: #bbb;
+  font-size: 0.8rem;
+}
+
+.marcador-admin {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.input-gol {
+  width: 2.75rem;
+  padding: 0.35rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.sep {
+  color: #888;
+  font-weight: 600;
+}
+
+.btn-guardar-final {
+  margin-left: 0.25rem;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #1a472a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-guardar-final:hover {
+  background: #2d5a3d;
+}
+
+.equipo-local {
+  text-align: left;
+}
+
+.equipo-visit {
+  text-align: right;
+}
+
+.ver-resultados {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.ver-resultados a {
+  color: #1a472a;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ver-resultados a:hover {
+  text-decoration: underline;
+}

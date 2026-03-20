@@ -1,0 +1,39 @@
+<h1>Hacerse Socio</h1>
+<p class="subtitle">Sumate a la familia del club</p>
+
+<div class="socios-content">
+  <section class="beneficios">
+    <h2>Beneficios de ser socio</h2>
+    <ul>
+      @for (beneficio of beneficios; track beneficio) {
+        <li>{{ beneficio }}</li>
+      }
+    </ul>
+  </section>
+
+  <section class="form-section">
+    <h2>Formulario de inscripción</h2>
+    <p class="info">Completá tus datos y te contactaremos para finalizar el trámite.</p>
+    <form class="socio-form">
+      <div class="form-group">
+        <label for="nombre">Nombre completo</label>
+        <input id="nombre" type="text" placeholder="Tu nombre">
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="tu@email.com">
+      </div>
+      <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input id="telefono" type="tel" placeholder="+54 3463-123456">
+      </div>
+      <div class="form-group">
+        <label for="dni">DNI</label>
+        <input id="dni" type="text" placeholder="Número de documento">
+      </div>
+      <button type="submit" class="btn-primary">Enviar solicitud</button>
+    </form>
+  </section>
+</div>
+
+<p class="ya-socio">¿Ya sos socio? <a routerLink="/socios/login">Accedé a tu cuenta</a> para pagar tu cuota.</p>

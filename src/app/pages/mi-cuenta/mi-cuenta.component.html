@@ -1,0 +1,72 @@
+<h1>Mi Cuenta</h1>
+<p class="subtitle">Área de socios - Pago de cuota</p>
+
+@if (!socio) {
+  <p class="cargando">Cargando...</p>
+} @else {
+<div class="cuenta-content">
+  <section class="estado-socio">
+    <h2>Estado de tu cuenta</h2>
+    <p><strong>Número de socio:</strong> {{ socio.numero_socio }}</p>
+    <p><strong>Nombre:</strong> {{ socio.nombre }}</p>
+    @if (cuotaPendiente) {
+      <div class="alerta pendiente">
+        <span>⚠️</span> Tenés {{ cuotasAdeudadas.length }} cuota(s) pendiente(s)
+      </div>
+    } @else {
+      <div class="alerta ok">
+        <span>✓</span> Cuota al día
+      </div>
+    }
+  </section>
+
+  <section class="cuotas-section">
+    <h2>Cuotas pagadas</h2>
+    @if (cuotasPagadas.length > 0) {
+      <ul class="cuotas-list">
+        @for (c of cuotasPagadas; track c.id) {
+          <li class="cuota-item pagada">
+            {{ formatearMes(c.mes, c.anio) }} — ${{ c.monto | number }} ✓
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="sin-cuotas">Aún no hay cuotas pagadas.</p>
+    }
+  </section>
+
+  <section class="cuotas-section">
+    <h2>Cuotas adeudadas</h2>
+    @if (cuotasAdeudadas.length > 0) {
+      <ul class="cuotas-list">
+        @for (c of cuotasAdeudadas; track c.id) {
+          <li class="cuota-item adeudada">
+            {{ formatearMes(c.mes, c.anio) }} — ${{ c.monto | number }}
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="sin-cuotas">No tenés cuotas pendientes.</p>
+    }
+  </section>
+
+  <section class="pago-section">
+    <h2>Pagar cuota mensual</h2>
+    <p class="monto">Monto: ${{ montoCuota | number }}</p>
+    <p class="info">Seleccioná el método de pago para abonar tu cuota.</p>
+    <div class="metodos-pago">
+      <button class="metodo-btn">
+        <span class="metodo-icon">💳</span>
+        Tarjeta de crédito/débito
+      </button>
+      <button class="metodo-btn">
+        <span class="metodo-icon">📱</span>
+        Transferencia / Mercado Pago
+      </button>
+    </div>
+    <p class="nota">* La integración de pagos se configurará con el proveedor elegido.</p>
+  </section>
+
+  <button type="button" class="btn-salir" (click)="socioAuth.logout()">Cerrar sesión</button>
+</div>
+}

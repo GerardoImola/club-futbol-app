@@ -1,0 +1,118 @@
+h1 {
+  color: #1a472a;
+  margin-bottom: 0.25rem;
+}
+
+.cargando {
+  color: #666;
+  padding: 2rem;
+  text-align: center;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.cuenta-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.estado-socio, .pago-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.estado-socio h2, .pago-section h2 {
+  color: #1a472a;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.alerta {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.alerta.pendiente {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffc107;
+}
+
+.alerta.ok {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #28a745;
+}
+
+.monto {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a472a;
+  margin: 0 0 0.5rem;
+}
+
+.info {
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.metodos-pago {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.metodo-btn {
+  width: 100%;
+  min-width: 0;
+  padding: 1.25rem;
+  border: 2px solid #1a472a;
+  background: white;
+  color: #1a472a;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.metodo-btn:hover {
+  background: #1a472a;
+  color: white;
+}
+
+.metodo-icon {
+  font-size: 1.5rem;
+}
+
+.nota {
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+@media (min-width: 480px) {
+  .metodos-pago {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .metodo-btn {
+    flex: 1;
+    min-width: 180px;
+  }
+}

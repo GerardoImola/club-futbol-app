@@ -1,0 +1,147 @@
+<h1>Resultados en vivo</h1>
+<p class="subtitle">
+  Primera División · Partidos de Club Atlético Canalense
+  @if (auth.isAdmin()) {
+    · Cargá los resultados manualmente
+    <button type="button" class="btn-fixture" (click)="cargarFixture()">Cargar fixture local</button>
+  }
+</p>
+
+@if (avisoFixture) {
+  <p class="aviso-fixture">{{ avisoFixture }}</p>
+}
+
+@if (cargandoFixture) {
+  <p class="cargando-fixture">Cargando calendario...</p>
+}
+
+<div class="partidos-list">
+  @for (item of partidosVista; track item.fixture.local + item.fixture.visitante + item.fixture.fecha) {
+    @if (item.partido) {
+      <div class="partido-card" [class.en-vivo]="item.partido.estado === 'en-vivo'" [class.editable]="auth.isAdmin()">
+        @if (auth.isAdmin()) {
+          <button class="btn-editar" (click)="abrirEditar(item.partido)" aria-label="Editar partido">✏️</button>
+        }
+        <div class="partido-header">
+          @if (item.partido.estado === 'en-vivo') {
+            <span class="badge live">EN VIVO {{ minutoActual(item.partido) }}'</span>
+          }
+          @if (item.partido.estado === 'finalizado') {
+            <span class="badge finalizado">FINAL</span>
+          }
+          @if (item.partido.estado === 'por-jugar') {
+            <span class="badge proximo">{{ item.partido.fecha || item.fixture.fecha || 'Próximo' }}</span>
+          }
+        </div>
+        <div class="equipos">
+          <div class="equipo">
+            <span class="nombre">{{ localMostrar(item) }}</span>
+            <span class="goles">{{ item.partido.golesLocal }}</span>
+          </div>
+          <span class="vs">vs</span>
+          <div class="equipo">
+            <span class="goles">{{ item.partido.golesVisitante }}</span>
+            <span class="nombre">{{ visitanteMostrar(item) }}</span>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="partido-card partido-solo-fixture">
+        @if (auth.isAdmin()) {
+          <button class="btn-editar" (click)="agregarDesdeFixture(item.fixture)" aria-label="Agregar resultado">➕</button>
+        }
+        <div class="partido-header">
+          <span class="badge proximo">{{ item.fixture.fecha }}</span>
+        </div>
+        <div class="equipos">
+          <div class="equipo">
+            <span class="nombre">{{ item.fixture.local }}</span>
+            <span class="goles">—</span>
+          </div>
+          <span class="vs">vs</span>
+          <div class="equipo">
+            <span class="goles">—</span>
+            <span class="nombre">{{ item.fixture.visitante }}</span>
+          </div>
+        </div>
+        @if (!auth.isAdmin()) {
+          <p class="hint-sin-resultado">Resultado pendiente</p>
+        } @else {
+          <p class="hint-sin-resultado">Tocá ➕ para cargar resultado</p>
+        }
+      </div>
+    }
+  }
+</div>
+
+@if (!cargandoFixture && partidosVista.length === 0) {
+  <p class="sin-partidos">
+    No hay partidos de Canalense para mostrar.
+    @if (auth.isAdmin()) {
+      Verificá el fixture en Supabase o usá «Cargar fixture local».
+    }
+  </p>
+}
+
+@if (auth.isAdmin()) {
+  <button class="fab" (click)="abrirAgregar()" aria-label="Agregar partido">+</button>
+}
+
+<!-- Modal formulario -->
+@if (showForm) {
+  <div class="modal-backdrop" (click)="cerrarForm()"></div>
+  <div class="modal-form">
+    <div class="modal-header">
+      <h2>{{ editingPartido ? 'Editar partido' : 'Agregar partido' }}</h2>
+      <button class="btn-cerrar" (click)="cerrarForm()" aria-label="Cerrar">×</button>
+    </div>
+    <form class="form" (ngSubmit)="guardar()">
+      <div class="form-group">
+        <label>Local</label>
+        <input type="text" [(ngModel)]="form.local" name="local" placeholder="Ej: Club Atlético Canalense" required>
+      </div>
+      <div class="form-group">
+        <label>Visitante</label>
+        <input type="text" [(ngModel)]="form.visitante" name="visitante" placeholder="Ej: Rival FC" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Goles local</label>
+          <input type="number" [(ngModel)]="form.golesLocal" name="golesLocal" min="0" max="99">
+        </div>
+        <div class="form-group">
+          <label>Goles visitante</label>
+          <input type="number" [(ngModel)]="form.golesVisitante" name="golesVisitante" min="0" max="99">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Estado</label>
+        <select [(ngModel)]="form.estado" name="estado">
+          <option value="por-jugar">Por jugar</option>
+          <option value="en-vivo">En vivo</option>
+          <option value="finalizado">Finalizado</option>
+        </select>
+      </div>
+      @if (form.estado === 'en-vivo') {
+        <div class="form-group">
+          <label>Minuto</label>
+          <input type="number" [(ngModel)]="form.minuto" name="minuto" min="0" max="120" placeholder="Ej: 67">
+        </div>
+      }
+      @if (form.estado === 'por-jugar') {
+        <div class="form-group">
+          <label>Fecha / Hora</label>
+          <input type="text" [(ngModel)]="form.fecha" name="fecha" placeholder="Ej: Dom 15:00, Sáb 18:00">
+        </div>
+      }
+      <div class="form-actions">
+        @if (editingPartido) {
+          <button type="button" class="btn-eliminar" (click)="eliminar(editingPartido)">
+            Eliminar
+          </button>
+        }
+        <button type="submit" class="btn-guardar">Guardar</button>
+      </div>
+    </form>
+  </div>
+}

@@ -1,0 +1,280 @@
+/* Mobile-first: Club Atlético Canalense */
+.app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: linear-gradient(135deg, #ffffff 0%, #609171 100%);
+  color: white;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: white;
+}
+
+.logo-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.logo-text {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.logo-full {
+  display: none;
+}
+
+.logo-short {
+  display: inline;
+  font-size: 1.1rem;
+}
+
+/* Hamburger menu - visible on mobile */
+.menu-toggle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hamburger {
+  display: block;
+  width: 24px;
+  height: 2.5px;
+  background: white;
+  border-radius: 2px;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+.hamburger:nth-child(1).open {
+  transform: translateY(7.5px) rotate(45deg);
+}
+
+.hamburger:nth-child(2).open {
+  opacity: 0;
+}
+
+.hamburger:nth-child(3).open {
+  transform: translateY(-7.5px) rotate(-45deg);
+}
+
+/* Nav - mobile: drawer */
+.nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(280px, 85vw);
+  height: 100vh;
+  height: 100dvh;
+  background: linear-gradient(180deg, #1a472a 0%, #2d5a3d 100%);
+  padding: 4.5rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 99;
+}
+
+.nav.open {
+  transform: translateX(0);
+}
+
+.nav-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  z-index: 98;
+}
+
+.nav-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav a {
+  color: rgba(255, 255, 255, 0.95);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+  font-size: 1.05rem;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+
+.nav a:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.nav a.active {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+}
+
+.nav-admin-link {
+  background: rgba(240, 193, 75, 0.3) !important;
+  color: #fff !important;
+}
+
+.nav-socio {
+  margin-top: auto;
+  background: #f0c14b !important;
+  color: #1a472a !important;
+  font-weight: 600 !important;
+}
+
+.nav-socio:hover {
+  background: #e6b73d !important;
+  color: #1a472a !important;
+}
+
+.nav-admin {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.9);
+  font: inherit;
+  font-weight: 500;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-admin:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+@media (min-width: 768px) {
+  .nav-admin {
+    width: auto;
+    padding: 0.5rem 0.75rem;
+    min-height: auto;
+  }
+}
+
+.main {
+  flex: 1;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.footer {
+  background: #1a1a1a;
+  color: #888;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.8rem;
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .header {
+    padding: 1rem 1.5rem;
+  }
+
+  .logo-img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .logo-full {
+    display: inline;
+    font-size: 1.25rem;
+  }
+
+  .logo-short {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: none;
+  }
+
+  .nav {
+    position: static;
+    width: auto;
+    height: auto;
+    flex-direction: row;
+    padding: 0;
+    gap: 0.5rem;
+    background: transparent;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .nav-backdrop {
+    display: none;
+  }
+
+  .nav a {
+    padding: 0.5rem 0.75rem;
+    min-height: auto;
+    font-size: 0.95rem;
+  }
+
+  .nav-socio {
+    margin-top: 0;
+    padding: 0.5rem 1rem !important;
+  }
+
+  .main {
+    padding: 1.5rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .header {
+    padding: 1rem 2rem;
+  }
+
+  .nav {
+    gap: 1rem;
+  }
+
+  .main {
+    padding: 2rem;
+  }
+}

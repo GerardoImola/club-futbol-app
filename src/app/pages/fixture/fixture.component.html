@@ -1,0 +1,161 @@
+<h1>Fixture</h1>
+<p class="subtitle">
+  Primera División · Calendario y posiciones
+  @if (auth.isAdmin() && vista === 'fixture') {
+    <span class="hint-admin">Podés cargar el resultado final de cada partido jugado abajo.</span>
+  }
+</p>
+
+@if (aviso) {
+  <p class="aviso">{{ aviso }}</p>
+}
+
+@if (cargando) {
+  <p class="cargando">Cargando fixture...</p>
+} @else {
+  <div class="vista-tabs" role="tablist" aria-label="Elegir vista">
+    <button
+      type="button"
+      role="tab"
+      class="tab-btn"
+      [class.active]="vista === 'fixture'"
+      [attr.aria-selected]="vista === 'fixture'"
+      (click)="setVista('fixture')"
+      id="tab-fixture"
+    >
+      Fixture
+    </button>
+    <button
+      type="button"
+      role="tab"
+      class="tab-btn"
+      [class.active]="vista === 'posiciones'"
+      [attr.aria-selected]="vista === 'posiciones'"
+      (click)="setVista('posiciones')"
+      id="tab-posiciones"
+    >
+      Posiciones
+    </button>
+  </div>
+
+  @if (vista === 'posiciones') {
+    <div class="vista-panel" role="tabpanel" aria-labelledby="tab-posiciones">
+      <section class="bloque-posiciones" aria-labelledby="titulo-posiciones">
+        <h2 id="titulo-posiciones" class="posiciones-titulo">Tabla de posiciones</h2>
+        
+        @if (!hayPartidosEnTabla) {
+          <p class="posiciones-vacia">
+            Todavía no hay partidos con resultado. Cuando se carguen marcadores (desde Fixture o desde Resultados), la tabla se completará automáticamente.
+          </p>
+        } @else {
+          <div class="tabla-wrap">
+            <table class="tabla-posiciones">
+              <thead>
+                <tr>
+                  <th scope="col" class="col-pos">#</th>
+                  <th scope="col" class="col-eq">Equipo</th>
+                  <th scope="col" title="Partidos jugados">PJ</th>
+                  <th scope="col" title="Ganados">G</th>
+                  <th scope="col" title="Empates">E</th>
+                  <th scope="col" title="Perdidos">P</th>
+                  <th scope="col" title="Goles a favor">GF</th>
+                  <th scope="col" title="Goles en contra">GC</th>
+                  <th scope="col" title="Diferencia de goles">DG</th>
+                  <th scope="col" title="Puntos">Pts</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (fila of tablaPosiciones; track fila.equipo) {
+                  <tr [class.fila-canalense]="esCanalense(fila.equipo)">
+                    <td class="col-pos">{{ fila.pos }}</td>
+                    <td class="col-eq">{{ fila.equipo }}</td>
+                    <td>{{ fila.pj }}</td>
+                    <td>{{ fila.pg }}</td>
+                    <td>{{ fila.pe }}</td>
+                    <td>{{ fila.pp }}</td>
+                    <td>{{ fila.gf }}</td>
+                    <td>{{ fila.gc }}</td>
+                    <td [class.dg-neg]="fila.dg < 0">{{ fila.dg > 0 ? '+' + fila.dg : fila.dg }}</td>
+                    <td class="col-pts">{{ fila.pts }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </section>
+    </div>
+  }
+
+  @if (vista === 'fixture') {
+    <div class="vista-panel" role="tabpanel" aria-labelledby="tab-fixture">
+      <div class="fixture-list">
+        @for (fecha of fechas; track fecha) {
+          <section class="fecha-section">
+            <h2 class="fecha-titulo">{{ fecha }}</h2>
+            <div class="partidos-fecha">
+              @for (p of partidosPorFecha(fecha); track p.local + p.visitante + p.fecha) {
+                <div class="partido-linea" [class.con-resultado]="tieneMarcador(p)">
+                  <span class="equipo equipo-local">{{ p.local }}</span>
+
+                  @if (!auth.isAdmin()) {
+                    <div class="marcador">
+                      @if (partidoPara(p); as partido) {
+                        @if (partido.estado === 'finalizado' || partido.estado === 'en-vivo') {
+                          <span class="badges">
+                            @if (partido.estado === 'en-vivo') {
+                              <span class="badge-live">EN VIVO</span>
+                            }
+                            @if (partido.estado === 'finalizado') {
+                              <span class="badge-final">FINAL</span>
+                            }
+                          </span>
+                          <span class="goles">{{ partido.golesLocal }} - {{ partido.golesVisitante }}</span>
+                        } @else {
+                          <span class="sin-marcador">vs</span>
+                        }
+                      } @else {
+                        <span class="sin-marcador">vs</span>
+                      }
+                    </div>
+                  } @else {
+                    <div class="marcador-admin">
+                      <input
+                        type="number"
+                        class="input-gol"
+                        min="0"
+                        max="99"
+                        [(ngModel)]="drafts[rowKey(p)].gl"
+                        [name]="'gl-' + rowKey(p)"
+                        aria-label="Goles local"
+                      />
+                      <span class="sep">-</span>
+                      <input
+                        type="number"
+                        class="input-gol"
+                        min="0"
+                        max="99"
+                        [(ngModel)]="drafts[rowKey(p)].gv"
+                        [name]="'gv-' + rowKey(p)"
+                        aria-label="Goles visitante"
+                      />
+                      <button type="button" class="btn-guardar-final" (click)="guardarFinal(p)">
+                        Guardar final
+                      </button>
+                    </div>
+                  }
+
+                  <span class="equipo equipo-visit">{{ p.visitante }}</span>
+                </div>
+              }
+            </div>
+          </section>
+        }
+      </div>
+    </div>
+  }
+}
+
+<p class="ver-resultados">
+  <a routerLink="/resultados">Resultados en vivo y edición avanzada →</a>
+</p>

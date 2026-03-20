@@ -1,0 +1,65 @@
+<h1>Galería de fotos</h1>
+<p class="subtitle">Los mejores momentos del club</p>
+
+<section id="finalisima" class="album-finalisima" aria-labelledby="titulo-finalisima">
+  <h2 id="titulo-finalisima" class="album-titulo">{{ tituloFinalisima }}</h2>
+  <p class="album-desc">Galería de la consagración — tocá una foto para ampliarla</p>
+
+  <div class="finalisima-grid">
+    @for (img of imagenesFinalisima; track img.src; let i = $index) {
+      <button
+        type="button"
+        class="thumb-btn"
+        (click)="abrirLightbox(i)"
+        [attr.aria-label]="'Ampliar imagen ' + (i + 1)"
+      >
+        <img [src]="img.src" [alt]="img.alt" loading="lazy" width="600" height="400" />
+      </button>
+    }
+  </div>
+</section>
+
+<section class="mas-momentos" aria-labelledby="titulo-mas-momentos">
+  <h2 id="titulo-mas-momentos" class="seccion-subtitulo">Más momentos</h2>
+  <div class="galeria-grid">
+    @for (foto of fotos; track foto.id) {
+      <div class="foto-card">
+        <div class="foto-placeholder">
+          <span class="placeholder-icon">📷</span>
+        </div>
+        <p class="foto-titulo">{{ foto.titulo }}</p>
+      </div>
+    }
+  </div>
+</section>
+
+@if (lightboxIndex !== null) {
+  <div
+    class="lightbox"
+    role="dialog"
+    aria-modal="true"
+    (click)="cerrarLightbox()"
+    [attr.aria-label]="
+      'Imagen ' + (lightboxIndex + 1) + ' de ' + imagenesFinalisima.length
+    "
+  >
+    <div class="lightbox-panel" (click)="$event.stopPropagation()">
+      <button type="button" class="lightbox-cerrar" (click)="cerrarLightbox()" aria-label="Cerrar">
+        ×
+      </button>
+      <button type="button" class="lightbox-nav lightbox-prev" (click)="anterior()" aria-label="Anterior">
+        ‹
+      </button>
+      <div class="lightbox-img-wrap">
+        <img
+          [src]="imagenesFinalisima[lightboxIndex].src"
+          [alt]="imagenesFinalisima[lightboxIndex].alt"
+        />
+      </div>
+      <button type="button" class="lightbox-nav lightbox-next" (click)="siguiente()" aria-label="Siguiente">
+        ›
+      </button>
+      <p class="lightbox-counter">{{ lightboxIndex + 1 }} / {{ imagenesFinalisima.length }}</p>
+    </div>
+  </div>
+}

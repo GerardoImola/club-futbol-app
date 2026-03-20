@@ -1,0 +1,48 @@
+<h1>Noticias</h1>
+<p class="subtitle">Últimas novedades del club</p>
+
+<div class="noticias-grid">
+  @for (noticia of noticias; track noticia.id) {
+    <article class="noticia-card" [class.noticia-extendida]="noticia.logros?.length">
+      <div class="noticia-placeholder" aria-hidden="true"></div>
+      <div class="noticia-content">
+        <span class="fecha">{{ noticia.fecha }}</span>
+        <h3>{{ noticia.titulo }}</h3>
+
+        @if (noticia.logros?.length) {
+          @if (!estaExpandida(noticia.id)) {
+            <p class="resumen">{{ noticia.resumen }}</p>
+            <button
+              type="button"
+              class="btn-ver-mas"
+              (click)="toggleNoticia(noticia.id)"
+              [attr.aria-expanded]="false"
+            >
+              Ver más
+            </button>
+          } @else {
+            <p class="intro">{{ noticia.intro }}</p>
+            <ul class="logros-lista">
+              @for (item of noticia.logros; track $index) {
+                <li>{{ item }}</li>
+              }
+            </ul>
+            @if (noticia.cierre) {
+              <p class="cierre">{{ noticia.cierre }}</p>
+            }
+            <button
+              type="button"
+              class="btn-ver-mas btn-ver-menos"
+              (click)="toggleNoticia(noticia.id)"
+              [attr.aria-expanded]="true"
+            >
+              Ver menos
+            </button>
+          }
+        } @else {
+          <p class="resumen">{{ noticia.resumen }}</p>
+        }
+      </div>
+    </article>
+  }
+</div>
