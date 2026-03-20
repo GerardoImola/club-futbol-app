@@ -1,0 +1,222 @@
+<div class="admin-galeria-page">
+  <div class="admin-galeria-card admin-galeria-card--wide">
+   
+
+    <div class="vista-tabs" role="tablist" aria-label="Modo de administración">
+      <button
+        type="button"
+        role="tab"
+        class="vista-tab"
+        [class.vista-tab--activa]="vistaAdmin === 'nuevo'"
+        [attr.aria-selected]="vistaAdmin === 'nuevo'"
+        (click)="elegirVista('nuevo')"
+      >
+        Nuevo álbum
+      </button>
+      <button
+        type="button"
+        role="tab"
+        class="vista-tab"
+        [class.vista-tab--activa]="vistaAdmin === 'editar'"
+        [attr.aria-selected]="vistaAdmin === 'editar'"
+        (click)="elegirVista('editar')"
+      >
+        Editar álbum
+      </button>
+    </div>
+
+    @if (error) {
+      <p class="msg msg--error">{{ error }}</p>
+    }
+    @if (ok) {
+      <p class="msg msg--ok">{{ ok }}</p>
+    }
+
+    @if (vistaAdmin === 'editar') {
+      <section class="seccion seccion--sin-borde-top" aria-labelledby="titulo-existentes">
+        <h2 id="titulo-existentes" class="seccion-titulo">Álbumes</h2>
+        @if (cargandoLista) {
+          <p class="hint" role="status">Cargando…</p>
+        } @else if (!galeria.isReady()) {
+          <p class="hint">Supabase no configurado.</p>
+        } @else if (albumes.length === 0) {
+          <p class="hint">
+            Todavía no hay álbumes en la nube. Tocá <strong>Nuevo álbum</strong> para crear el primero.
+          </p>
+        } @else {
+          @for (a of albumes; track a.id) {
+            <article class="album-admin">
+              <div class="album-admin-header">
+                <label class="label sr-only" [attr.for]="'tit-' + a.id">Nombre de la carpeta</label>
+                <input
+                  type="text"
+                  class="input input--inline"
+                  [id]="'tit-' + a.id"
+                  [name]="'tit-' + a.id"
+                  [(ngModel)]="titulosDraft[a.id]"
+                  [disabled]="busy"
+                />
+                <button
+                  type="button"
+                  class="btn btn--sec"
+                  (click)="guardarNombreAlbum(a.id)"
+                  [disabled]="busy"
+                >
+                  Guardar nombre
+                </button>
+              </div>
+              <div class="album-admin-fotos">
+                @for (f of a.fotos; track f.id) {
+                  <div class="thumb-wrap">
+                    <img [src]="f.url" [alt]="'Foto'" width="120" height="90" loading="lazy" />
+                    <button
+                      type="button"
+                      class="btn-thumb-del"
+                      (click)="pedirEliminarFoto(f)"
+                      [disabled]="busy"
+                      aria-label="Eliminar foto"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                }
+                @if (a.fotos.length === 0) {
+                  <p class="hint album-sin-fotos">Sin fotos. Agregá abajo.</p>
+                }
+              </div>
+              <div class="album-admin-acciones">
+                <label class="label label--small" [attr.for]="'add-' + a.id">Agregar fotos</label>
+                <input
+                  type="file"
+                  class="file-input file-input--small"
+                  [id]="'add-' + a.id"
+                  accept="image/*"
+                  capture="environment"
+                  multiple
+                  (change)="onAgregarFotosAlbum(a.id, $event)"
+                  [disabled]="busy"
+                />
+                <button
+                  type="button"
+                  class="btn btn--peligro"
+                  (click)="pedirEliminarAlbum(a)"
+                  [disabled]="busy"
+                >
+                  Eliminar carpeta completa
+                </button>
+              </div>
+            </article>
+          }
+        }
+      </section>
+    }
+
+    @if (vistaAdmin === 'nuevo') {
+      <section class="seccion seccion--nueva seccion--sin-borde-top" aria-labelledby="titulo-nueva">
+        <h2 id="titulo-nueva" class="seccion-titulo">Nuevo álbum</h2>
+        <p class="hint seccion-hint">Poné un nombre y al menos una foto. Podés elegir varias o usar la cámara del celular.</p>
+
+        <label class="label" for="admin-galeria-titulo">Nombre de la tarjeta</label>
+        <input
+          id="admin-galeria-titulo"
+          type="text"
+          class="input"
+          [(ngModel)]="titulo"
+          name="tituloNuevo"
+          placeholder="Ej. Torneo verano 2025"
+          [disabled]="busy"
+          autocomplete="off"
+        />
+
+        <label class="label" for="admin-galeria-files">Fotos</label>
+        <input
+          id="admin-galeria-files"
+          type="file"
+          class="file-input"
+          accept="image/*"
+          capture="environment"
+          multiple
+          (change)="onFilesChange($event)"
+          [disabled]="busy"
+        />
+        <p class="hint">En el celular podés usar cámara o galería.</p>
+
+        <button type="button" class="btn" (click)="guardarNuevaTarjeta()" [disabled]="busy || enviando">
+          {{ enviando ? 'Subiendo…' : 'Crear tarjeta y subir fotos' }}
+        </button>
+      </section>
+    }
+
+    <nav class="footer-nav">
+      <a routerLink="/galeria">Ver galería pública</a>
+      <a routerLink="/resultados">Volver a resultados</a>
+    </nav>
+  </div>
+</div>
+
+@if (confirmarEliminarFoto) {
+  <div
+    class="modal-foto-backdrop"
+    role="presentation"
+    (click)="cerrarModalEliminarFoto()"
+  ></div>
+  <div
+    class="modal-foto-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-foto-titulo"
+  >
+    <h2 id="modal-foto-titulo" class="modal-foto-titulo">¿Eliminar esta imagen?</h2>
+    <p class="modal-foto-texto">Se borrará de la galería y del almacenamiento. No se puede deshacer.</p>
+    <div class="modal-foto-preview">
+    </div>
+    <div class="modal-foto-acciones">
+      <button type="button" class="btn btn--modal-cancel" (click)="cerrarModalEliminarFoto()">
+        Cancelar
+      </button>
+      <button
+        type="button"
+        class="btn btn--modal-ok"
+        (click)="confirmarEliminarFotoSi()"
+        [disabled]="busy"
+      >
+        Sí, eliminar
+      </button>
+    </div>
+  </div>
+}
+
+@if (confirmarEliminarAlbum) {
+  <div
+    class="modal-foto-backdrop"
+    role="presentation"
+    (click)="cerrarModalEliminarAlbum()"
+  ></div>
+  <div
+    class="modal-foto-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-album-titulo"
+  >
+    <h2 id="modal-album-titulo" class="modal-foto-titulo">¿Eliminar carpeta completa?</h2>
+    <p class="modal-foto-texto">
+      Se borrará la carpeta <strong>«{{ confirmarEliminarAlbum.titulo }}»</strong> y sus
+      {{ confirmarEliminarAlbum.cantidadFotos }}
+      {{ confirmarEliminarAlbum.cantidadFotos === 1 ? 'foto' : 'fotos' }} del almacenamiento. No se puede
+      deshacer.
+    </p>
+    <div class="modal-foto-acciones">
+      <button type="button" class="btn btn--modal-cancel" (click)="cerrarModalEliminarAlbum()">
+        Cancelar
+      </button>
+      <button
+        type="button"
+        class="btn btn--modal-ok"
+        (click)="confirmarEliminarAlbumSi()"
+        [disabled]="busy"
+      >
+        Sí, eliminar carpeta
+      </button>
+    </div>
+  </div>
+}

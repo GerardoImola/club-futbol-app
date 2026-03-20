@@ -1,59 +1,115 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { FotoGaleria } from '../../data/galeria.model';
+import { AuthService } from '../../services/auth.service';
+import { GaleriaStorageService } from '../../services/galeria-storage.service';
 
-interface FotoPlaceholder {
-  id: number;
+interface LightboxState {
   titulo: string;
+  paths: string[];
+  index: number;
 }
 
 @Component({
   selector: 'app-galeria',
   standalone: true,
+  imports: [RouterLink],
   templateUrl: './galeria.component.html',
   styleUrl: './galeria.component.css'
 })
-export class GaleriaComponent {
-  readonly tituloFinalisima = 'Campeón Finalísima';
+export class GaleriaComponent implements OnInit {
+  /** Álbumes definidos en el repo + los que vienen de Supabase (admin). */
+  fotos = signal<FotoGaleria[]>([]);
+  cargandoRemoto = false;
+  avisoRemoto: string | null = null;
 
-  /** Rutas bajo public/images/finalisima/ */
-  imagenesFinalisima: { src: string; alt: string }[] = [
-    { src: 'images/finalisima/galeria-01.svg', alt: 'Campeón Finalísima 1' },
-    { src: 'images/finalisima/galeria-02.svg', alt: 'Campeón Finalísima 2' },
-    { src: 'images/finalisima/galeria-03.svg', alt: 'Campeón Finalísima 3' },
-    { src: 'images/finalisima/galeria-04.svg', alt: 'Campeón Finalísima 4' },
-    { src: 'images/finalisima/galeria-05.svg', alt: 'Campeón Finalísima 5' },
-    { src: 'images/finalisima/galeria-06.svg', alt: 'Campeón Finalísima 6' }
+  private readonly fotosLocales: FotoGaleria[] = [
+    
   ];
 
-  lightboxIndex: number | null = null;
+  lightbox: LightboxState | null = null;
 
-  fotos: FotoPlaceholder[] = [
-    { id: 1, titulo: 'Celebración del gol' },
-    { id: 2, titulo: 'Entrenamiento' },
-    { id: 3, titulo: 'Presentación del plantel' },
-    { id: 4, titulo: 'Partido de inferiores' },
-    { id: 5, titulo: 'Hinchada en la cancha' },
-    { id: 6, titulo: 'Vestuario' }
-  ];
+  constructor(
+    private galeriaStorage: GaleriaStorageService,
+    public auth: AuthService
+  ) {}
 
-  abrirLightbox(i: number): void {
-    this.lightboxIndex = i;
-    document.body.style.overflow = 'hidden';
+  async ngOnInit() {
+    const base = [...this.fotosLocales];
+    if (!this.galeriaStorage.isReady()) {
+      this.fotos.set(base);
+      return;
+    }
+    this.cargandoRemoto = true;
+    this.avisoRemoto = null;
+    try {
+      const remoto = await this.galeriaStorage.loadAlbumsPublic();
+      this.fotos.set([...base, ...remoto]);
+    } catch (e) {
+      this.avisoRemoto =
+        e instanceof Error ? e.message : 'No se pudieron cargar álbumes desde el servidor.';
+      this.fotos.set(base);
+    } finally {
+      this.cargandoRemoto = false;
+    }
+  }
+
+  urlPublica(ruta: string): string {
+    if (ruta.startsWith('http://') || ruta.startsWith('https://')) {
+      return ruta;
+    }
+    return '/' + ruta.replace(/^\//, '');
+  }
+
+  abrirLightbox(foto: FotoGaleria): void {
+    if (!foto.imagenes.length) return;
+    this.lightbox = { titulo: foto.titulo, paths: [...foto.imagenes], index: 0 };
   }
 
   cerrarLightbox(): void {
-    this.lightboxIndex = null;
-    document.body.style.overflow = '';
+    this.lightbox = null;
   }
 
-  anterior(): void {
-    if (this.lightboxIndex === null) return;
-    const n = this.imagenesFinalisima.length;
-    this.lightboxIndex = (this.lightboxIndex - 1 + n) % n;
+  lightboxImagenActual(): string {
+    if (!this.lightbox) return '';
+    return this.urlPublica(this.lightbox.paths[this.lightbox.index]);
   }
 
-  siguiente(): void {
-    if (this.lightboxIndex === null) return;
-    const n = this.imagenesFinalisima.length;
-    this.lightboxIndex = (this.lightboxIndex + 1) % n;
+  lightboxAnterior(): void {
+    if (!this.lightbox || this.lightbox.paths.length < 2) return;
+    const n = this.lightbox.paths.length;
+    this.lightbox = {
+      ...this.lightbox,
+      index: (this.lightbox.index - 1 + n) % n
+    };
+  }
+
+  lightboxSiguiente(): void {
+    if (!this.lightbox || this.lightbox.paths.length < 2) return;
+    const n = this.lightbox.paths.length;
+    this.lightbox = {
+      ...this.lightbox,
+      index: (this.lightbox.index + 1) % n
+    };
+  }
+
+  irLightbox(i: number): void {
+    if (!this.lightbox || i < 0 || i >= this.lightbox.paths.length) return;
+    this.lightbox = { ...this.lightbox, index: i };
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onDocumentKeydown(e: KeyboardEvent): void {
+    if (!this.lightbox) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      this.cerrarLightbox();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      this.lightboxAnterior();
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      this.lightboxSiguiente();
+    }
   }
 }

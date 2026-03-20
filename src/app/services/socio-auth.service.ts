@@ -26,23 +26,35 @@ export class SocioAuthService {
   cuotasAdeudadas: Cuota[] = [];
   private _initDone = false;
 
+  /** true después del primer getSession en init (para no mostrar "Cargando" cuando no hay sesión) */
+  cuentaBootstrapDone = signal(false);
+  /** Sesión de recuperación: el usuario debe elegir contraseña nueva (enlace del email) */
+  enRecuperacionPassword = signal(false);
+
   isLoggedIn = computed(() => this.socio() !== null);
 
   constructor(private supabase: SupabaseService) {}
 
   async init() {
-    if (this._initDone) return;
+    if (this._initDone) {
+      this.cuentaBootstrapDone.set(true);
+      return;
+    }
     this._initDone = true;
 
     const client = this.supabase.client;
-    if (!client) return;
-
-    const { data: { session } } = await client.auth.getSession();
-    if (session?.user) {
-      await this.cargarSocio(session.user.id);
+    if (!client) {
+      this.cuentaBootstrapDone.set(true);
+      return;
     }
 
-    client.auth.onAuthStateChange(async (_, newSession) => {
+    client.auth.onAuthStateChange(async (event, newSession) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        this.enRecuperacionPassword.set(true);
+        return;
+      }
+      this.enRecuperacionPassword.set(false);
+
       if (newSession?.user) {
         await this.cargarSocio(newSession.user.id);
       } else {
@@ -51,6 +63,17 @@ export class SocioAuthService {
         this.cuotasAdeudadas = [];
       }
     });
+
+    try {
+      const {
+        data: { session }
+      } = await client.auth.getSession();
+      if (session?.user) {
+        await this.cargarSocio(session.user.id);
+      }
+    } finally {
+      this.cuentaBootstrapDone.set(true);
+    }
   }
 
   private async cargarSocio(userId: string) {
@@ -206,15 +229,64 @@ export class SocioAuthService {
       socio_id: userId,
       mes: hoy.getMonth() + 1,
       anio: hoy.getFullYear(),
-      monto: 5000,
+      monto: 10000,
       pagada: false
     });
   }
 
-  async logout() {
-    await this.supabase.client?.auth.signOut();
+  /**
+   * Cierra sesión en el dispositivo. Usa scope local para no depender de red
+   * (signOut global a veces queda colgado si falla la revocación en el servidor).
+   */
+  async logout(): Promise<void> {
     this.socio.set(null);
     this.cuotasPagadas = [];
     this.cuotasAdeudadas = [];
+    this.enRecuperacionPassword.set(false);
+
+    const client = this.supabase.client;
+    if (!client) return;
+
+    try {
+      await client.auth.signOut({ scope: 'local' });
+    } catch {
+      /* sesión local igualmente limpiada arriba */
+    }
+  }
+
+  /** Envía email con enlace para restablecer contraseña (configurá redirect en Supabase Auth) */
+  async resetPasswordForEmail(email: string): Promise<{ error?: string }> {
+    const client = this.supabase.client;
+    if (!client) return { error: 'Base de datos no configurada' };
+    const redirectTo =
+      typeof globalThis !== 'undefined' && globalThis.location?.origin
+        ? `${globalThis.location.origin}/socios/login`
+        : undefined;
+    try {
+      const { error } = await client.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo
+      });
+      if (error) return { error: error.message };
+      return {};
+    } catch (e) {
+      return { error: mensajeErrorRed(e) };
+    }
+  }
+
+  /** Tras abrir el enlace del email de recuperación */
+  async actualizarPasswordRecuperacion(password: string): Promise<{ error?: string }> {
+    const client = this.supabase.client;
+    if (!client) return { error: 'Base de datos no configurada' };
+    if (password.length < 6) return { error: 'La contraseña debe tener al menos 6 caracteres' };
+    try {
+      const { error } = await client.auth.updateUser({ password });
+      if (error) return { error: error.message };
+      this.enRecuperacionPassword.set(false);
+      const uid = (await client.auth.getUser()).data.user?.id;
+      if (uid) await this.cargarSocio(uid);
+      return {};
+    } catch (e) {
+      return { error: mensajeErrorRed(e) };
+    }
   }
 }

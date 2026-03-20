@@ -54,15 +54,17 @@ Los socios pueden registrarse e ingresar para ver su número de socio, cuotas pa
 - Reactivá el proyecto en [Supabase Dashboard](https://supabase.com/dashboard) (los free se **pausan** si no los usás un tiempo).
 - Confirmá que **Settings → API → Project URL** sea **exactamente** la misma que `supabaseUrl` en `environment.ts` (sin espacios, con `https://`). Ojo: el subdominio tiene letras parecidas (`khrs` vs `khsr`); si está mal **no resuelve DNS** y el navegador muestra `Failed to fetch`.
 - **Authentication → URL configuration**: agregá `http://localhost:4200` en **Site URL** y en **Redirect URLs** (`http://localhost:4200/**`).
+- **Recuperar contraseña:** en **Redirect URLs** tiene que estar la ruta exacta **`…/socios/login`** (ej. `https://tu-app.vercel.app/socios/login` y `http://localhost:4200/socios/login`). El enlace del email te lleva ahí para elegir contraseña nueva.
 - Si abrís la app desde **`http://192.168.x.x:4200`** (otro dispositivo en la red), agregá también esa URL en Redirect URLs, o usá solo `http://127.0.0.1:4200` en la misma PC.
 - Probá sin VPN / sin bloqueador de anuncios y en otro navegador.
 
 ### Flujo
 
 - **Registrarse**: Hacerse Socio → "Accedé a tu cuenta" → "Registrate" → nombre, email, contraseña
-- **Ingresar**: Mismo link → email y contraseña
+- **Ingresar**: Mismo link → email y contraseña. **¿Olvidaste tu contraseña?** pedí el enlace por email desde la misma pantalla de ingreso.
 - Al registrarse se asigna un **número de socio** automático
-- Se crea la cuota del mes actual como adeudada
+- Se crea la cuota del mes actual como adeudada (**monto por defecto $10.000**; configurable en `socio-auth.service.ts` y en los `.sql` de Supabase)
+- Si ya tenías cuotas cargadas a $5.000, ejecutá **`supabase-cuota-monto-10000.sql`** y volvé a aplicar el trigger desde `supabase-registro-trigger.sql`
 - El admin puede marcar cuotas como pagadas desde Supabase (o agregar integración de pagos)
 
 ## Admin - Editar resultados

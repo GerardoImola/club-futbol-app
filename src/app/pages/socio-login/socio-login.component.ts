@@ -1,6 +1,5 @@
-import { Component, NgZone } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { RouterLink } from '@angular/router';
+import { Component, NgZone, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SocioAuthService } from '../../services/socio-auth.service';
 import { SupabaseService } from '../../services/supabase.service';
@@ -12,15 +11,21 @@ import { SupabaseService } from '../../services/supabase.service';
   templateUrl: './socio-login.component.html',
   styleUrl: './socio-login.component.css'
 })
-export class SocioLoginComponent {
-  modo: 'login' | 'registro' = 'login';
+export class SocioLoginComponent implements OnInit {
+  modo: 'login' | 'registro' | 'recuperar' = 'login';
   email = '';
   password = '';
   nombre = '';
   telefono = '';
+  nuevaPassword = '';
+  nuevaPassword2 = '';
   error = '';
   mensajeExito = '';
   loading = false;
+
+  mostrarPassword = false;
+  mostrarNuevaPassword = false;
+  mostrarNuevaPassword2 = false;
 
   constructor(
     private socioAuth: SocioAuthService,
@@ -30,14 +35,78 @@ export class SocioLoginComponent {
     private ngZone: NgZone
   ) {}
 
+  ngOnInit(): void {
+    void this.socioAuth.init();
+  }
+
   get isConfigured(): boolean {
     return this.supabase.isConfigured;
+  }
+
+  get enRecuperacionDesdeEmail(): boolean {
+    return this.socioAuth.enRecuperacionPassword();
   }
 
   toggleModo() {
     this.modo = this.modo === 'login' ? 'registro' : 'login';
     this.error = '';
     this.mensajeExito = '';
+  }
+
+  irARecuperar() {
+    this.modo = 'recuperar';
+    this.error = '';
+    this.mensajeExito = '';
+  }
+
+  volverAlLogin() {
+    this.modo = 'login';
+    this.error = '';
+    this.mensajeExito = '';
+  }
+
+  async enviarRecuperacion() {
+    this.error = '';
+    this.mensajeExito = '';
+    if (!this.email.trim()) {
+      this.error = 'Ingresá tu email';
+      return;
+    }
+    this.loading = true;
+    const result = await this.socioAuth.resetPasswordForEmail(this.email);
+    this.ngZone.run(() => {
+      this.loading = false;
+      if (result.error) {
+        this.error = result.error;
+        return;
+      }
+      this.mensajeExito =
+        'Si el email está registrado, recibís un enlace para elegir una contraseña nueva. Revisá también spam.';
+      this.modo = 'login';
+    });
+  }
+
+  async guardarNuevaPasswordRecuperacion() {
+    this.error = '';
+    this.mensajeExito = '';
+    if (this.nuevaPassword.length < 6) {
+      this.error = 'La contraseña debe tener al menos 6 caracteres';
+      return;
+    }
+    if (this.nuevaPassword !== this.nuevaPassword2) {
+      this.error = 'Las contraseñas no coinciden';
+      return;
+    }
+    this.loading = true;
+    const result = await this.socioAuth.actualizarPasswordRecuperacion(this.nuevaPassword);
+    this.ngZone.run(() => {
+      this.loading = false;
+      if (result.error) {
+        this.error = result.error;
+        return;
+      }
+      void this.router.navigateByUrl(this.route.snapshot.queryParams['returnUrl'] || '/mi-cuenta');
+    });
   }
 
   async onSubmit() {

@@ -33,11 +33,25 @@ export class NoticiasComponent {
 
   noticias: Noticia[] = [
     {
-      id: 4,
+      id: 3,
+      titulo: 'PROXIMO PARTIDO: Colonia vs Canalense ',
+      resumen:
+        'El verde visita a Colonia en Alejandro Roca. El partido será a las 15:00 hs Reserva y 17:00 hs 1ª División. Canalense buscará su segunda victoria en la temporada.',
+      fecha: '2025-03-20'
+    },
+    {
+      id: 1,
+      titulo: 'Victoria en el Debut ',
+      resumen:
+        'El verde se impuso por 1-0 en un partido vibrante. Golaso de tiro libre de Pauli Mansilla.',
+      fecha: '2025-03-15'
+    },
+    {
+      id: 2,
       titulo: 'Nueve títulos y una temporada histórica',
       resumen:
         'Canalense se consagró como el club más ganador del fútbol 2025, con nueve campeonatos en todas las categorías.',
-      fecha: '2025-03-10',
+      fecha: '2025-03-9',
       intro:
         'El verde llenó sus vitrinas de trofeos y escribió una página inolvidable en su historia. Con 9 títulos obtenidos, Canalense se convirtió en el club más ganador de la temporada de fútbol 2025:',
       logros: [
@@ -54,26 +68,6 @@ export class NoticiasComponent {
       cierre:
         'Un año que quedará grabado para siempre, fruto del trabajo, el compromiso y el sentido de pertenencia de jugadores, cuerpos técnicos, dirigentes y de toda una comunidad que empuja siempre para el mismo lado.'
     },
-    {
-      id: 1,
-      titulo: 'Victoria en el clásico',
-      resumen:
-        'El primer equipo se impuso por 2-1 en un partido vibrante. Goles de Martínez y López.',
-      fecha: '2025-03-15'
-    },
-    {
-      id: 2,
-      titulo: 'Nuevo refuerzo para inferiores',
-      resumen:
-        'Se suma al plantel sub-18 un prometedor mediocampista de la zona.',
-      fecha: '2025-03-14'
-    },
-    {
-      id: 3,
-      titulo: 'Próximo partido de local',
-      resumen:
-        'Este domingo recibimos al líder del torneo. ¡Te esperamos en la cancha!',
-      fecha: '2025-03-13'
-    }
+   
   ];
 }

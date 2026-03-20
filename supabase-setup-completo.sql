@@ -18,7 +18,7 @@ create table if not exists public.cuotas (
   socio_id uuid not null references public.socios(id) on delete cascade,
   mes integer not null check (mes >= 1 and mes <= 12),
   anio integer not null,
-  monto numeric not null default 5000,
+  monto numeric not null default 10000,
   pagada boolean not null default false,
   fecha_pago timestamptz,
   created_at timestamptz default now(),
@@ -81,7 +81,7 @@ begin
   v_anio := extract(year from (now() at time zone 'America/Argentina/Buenos_Aires'))::int;
 
   insert into public.cuotas (socio_id, mes, anio, monto, pagada)
-  values (new.id, v_mes, v_anio, 5000, false)
+  values (new.id, v_mes, v_anio, 10000, false)
   on conflict (socio_id, mes, anio) do nothing;
 
   return new;
@@ -118,7 +118,7 @@ select
   s.id,
   extract(month from (now() at time zone 'America/Argentina/Buenos_Aires'))::int,
   extract(year from (now() at time zone 'America/Argentina/Buenos_Aires'))::int,
-  5000,
+  10000,
   false
 from public.socios s
 where not exists (
@@ -131,3 +131,4 @@ on conflict (socio_id, mes, anio) do nothing;
 
 -- Resultados de partidos (compartidos entre dispositivos): ejecutá también supabase-resultados.sql
 -- Calendario editable desde la app (admin): después supabase-fixture.sql + supabase-fixture-rpc.sql
+-- Galería con fotos subidas por admin: supabase-galeria.sql (bucket + tablas + RPC)

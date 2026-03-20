@@ -87,6 +87,42 @@
   font-size: 1rem;
 }
 
+.password-wrap {
+  position: relative;
+}
+
+.password-wrap input {
+  padding-right: 2.75rem;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 0.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #555;
+  cursor: pointer;
+}
+
+.toggle-password:hover {
+  color: #1a472a;
+  background: rgba(26, 71, 42, 0.08);
+}
+
+.toggle-password:focus-visible {
+  outline: 2px solid #1a472a;
+  outline-offset: 2px;
+}
+
 .form-group input:focus {
   outline: none;
   border-color: #1a472a;
@@ -117,6 +153,14 @@
   font-size: 0.9rem;
   cursor: pointer;
   margin-top: 1rem;
+}
+
+.btn-olvide {
+  display: block;
+  width: 100%;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  text-decoration: underline;
 }
 
 .volver {

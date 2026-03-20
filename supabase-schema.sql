@@ -17,7 +17,7 @@ create table if not exists public.cuotas (
   socio_id uuid not null references public.socios(id) on delete cascade,
   mes integer not null check (mes >= 1 and mes <= 12),
   anio integer not null,
-  monto numeric not null default 5000,
+  monto numeric not null default 10000,
   pagada boolean not null default false,
   fecha_pago timestamptz,
   created_at timestamptz default now(),

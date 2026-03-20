@@ -1,8 +1,13 @@
 <h1>Mi Cuenta</h1>
 <p class="subtitle">Área de socios - Pago de cuota</p>
 
-@if (!socio) {
+@if (!socioAuth.cuentaBootstrapDone()) {
   <p class="cargando">Cargando...</p>
+} @else if (!socio) {
+  <div class="sin-sesion">
+    <p>No hay una sesión activa o tu cuenta no está vinculada como socio.</p>
+    <a routerLink="/socios/login" class="btn-ingresar">Ingresar con mi cuenta</a>
+  </div>
 } @else {
 <div class="cuenta-content">
   <section class="estado-socio">
@@ -67,6 +72,6 @@
     <p class="nota">* La integración de pagos se configurará con el proveedor elegido.</p>
   </section>
 
-  <button type="button" class="btn-salir" (click)="socioAuth.logout()">Cerrar sesión</button>
+  <button type="button" class="btn-salir" (click)="cerrarSesion()">Cerrar sesión</button>
 </div>
 }

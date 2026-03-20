@@ -30,7 +30,7 @@ begin
   v_anio := extract(year from (now() at time zone 'America/Argentina/Buenos_Aires'))::int;
 
   insert into public.cuotas (socio_id, mes, anio, monto, pagada)
-  values (new.id, v_mes, v_anio, 5000, false)
+  values (new.id, v_mes, v_anio, 10000, false)
   on conflict (socio_id, mes, anio) do nothing;
 
   return new;
