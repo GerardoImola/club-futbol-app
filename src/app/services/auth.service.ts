@@ -7,8 +7,10 @@ const SESSION_KEY = 'cac_admin_session';
 export class AuthService {
   isAdmin = signal<boolean>(this.checkSession());
 
-  login(password: string): boolean {
-    if (password === environment.adminPassword) {
+  login(username: string, password: string): boolean {
+    const u = username.trim();
+    const p = password;
+    if (u === environment.adminUsername && p === environment.adminPassword) {
       sessionStorage.setItem(SESSION_KEY, '1');
       this.isAdmin.set(true);
       return true;

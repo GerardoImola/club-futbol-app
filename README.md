@@ -41,9 +41,10 @@ Los socios pueden registrarse e ingresar para ver su número de socio, cuotas pa
    ```
 4. En Supabase **SQL Editor**, ejecutá **`supabase-setup-completo.sql`** (tablas `socios` / `cuotas`, políticas, trigger, etc.). Si preferís por partes: `supabase-schema.sql` y luego `supabase-registro-trigger.sql`.
 5. (Opcional) **`supabase-fixture.sql`**: calendario en `fixture_partidos`; la app lo lee desde la base (si falla o está vacía, usa datos locales).
-6. **`supabase-resultados.sql`**: guarda **marcadores y estados** en `partido_resultados` para que se vean igual en PC, Vercel y celular. La clave por defecto en la tabla `resultados_admin_secret` es `cac2025`; debe coincidir con `adminPassword` en `environment.ts` / `environment.prod.ts`. Si cambiás la contraseña del admin, ejecutá: `update public.resultados_admin_secret set secret = 'tu_clave' where id = 1;`
-7. Si en el navegador falla la petición a `partido_resultados` (401 o permisos), ejecutá también **`supabase-resultados-grants.sql`** o volvé a correr `supabase-resultados.sql` completo (incluye `GRANT SELECT`). En **Supabase → Project Settings → Data API**, comprobá que las tablas del esquema `public` estén expuestas (por defecto sí).
-8. **`supabase-fixture-rpc.sql`** (después del paso 6): crea la función `sync_fixture_partidos` para **publicar el calendario desde la app** (botón en Fixture, sesión admin). Usa la misma clave que `resultados_admin_secret`. Si volvés a ejecutar **`supabase-fixture.sql`**, al final ya incluye `GRANT SELECT` sobre `fixture_partidos`.
+6. **`supabase-resultados.sql`**: guarda **marcadores y estados** en `partido_resultados` para que se vean igual en PC, Vercel y celular. La clave por defecto en la tabla `resultados_admin_secret` es `cac2025`; debe coincidir con `adminPassword` en `environment.ts` / `environment.prod.ts`. Si cambiás la contraseña del admin, ejecutá: `update public.resultados_admin_secret set secret = 'tu_clave' where id = 1;` El mismo archivo crea la función **`list_socios_admin`** (pantalla **Socios** del admin). Si ves el error `Could not find the function public.list_socios_admin`, volvé a ejecutar **`supabase-resultados.sql`** completo en el SQL Editor (o solo el bloque final del archivo, o **`supabase-socios-admin-rpc.sql`**). Después, en **Project Settings → API** podés usar **Reload schema** si PostgREST sigue sin ver la función.
+7. **`supabase-noticias.sql`**: tabla `noticias` (lectura pública) y RPC **`sync_noticias_admin`** para que el admin publique novedades desde la pantalla **Noticias**. Requiere el paso 6 (`resultados_admin_secret`).
+8. Si en el navegador falla la petición a `partido_resultados` (401 o permisos), ejecutá también **`supabase-resultados-grants.sql`** o volvé a correr `supabase-resultados.sql` completo (incluye `GRANT SELECT`). En **Supabase → Project Settings → Data API**, comprobá que las tablas del esquema `public` estén expuestas (por defecto sí).
+9. **`supabase-fixture-rpc.sql`** (después del paso 6): crea la función `sync_fixture_partidos` para **publicar el calendario desde la app** (botón en Fixture, sesión admin). Usa la misma clave que `resultados_admin_secret`. Si volvés a ejecutar **`supabase-fixture.sql`**, al final ya incluye `GRANT SELECT` sobre `fixture_partidos`.
 
 **Posiciones:** la tabla de posiciones **no se guarda en la base**: se calcula en el navegador con el fixture + los resultados. Con fixture y resultados sincronizados en Supabase, todos ven la misma tabla.
 
@@ -87,7 +88,7 @@ clubName = 'Nombre de tu club';
 
 ## Próximos pasos
 
-- Backend/API para noticias y plantel (los resultados ya usan Supabase si ejecutaste `supabase-resultados.sql`)
+- API o Supabase para **plantel** si querés editarlo desde la app (las noticias ya pueden publicarse con `supabase-noticias.sql`)
 - Integrar pasarela de pagos (Mercado Pago, Stripe, etc.) en Mi Cuenta
 - Subir fotos reales a la galería
 - Sistema de login para socios

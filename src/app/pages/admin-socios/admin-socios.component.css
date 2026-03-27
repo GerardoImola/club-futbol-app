@@ -1,0 +1,75 @@
+h1 {
+  color: #1a472a;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.estado {
+  color: #555;
+  font-size: 1.05rem;
+}
+
+.error {
+  color: #a32020;
+  background: #fdeaea;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.vacio {
+  color: #666;
+}
+
+.tabla-wrap {
+  overflow-x: auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.tabla-socios {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.tabla-socios th,
+.tabla-socios td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.tabla-socios th {
+  background: #f4f7f5;
+  color: #1a472a;
+  font-weight: 600;
+}
+
+.tabla-socios .num {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.tabla-socios a {
+  color: #1a472a;
+  word-break: break-all;
+}
+
+.tabla-socios tbody tr:hover {
+  background: #fafcfb;
+}
+
+@media (max-width: 600px) {
+  .tabla-socios th,
+  .tabla-socios td {
+    padding: 0.5rem 0.65rem;
+    font-size: 0.82rem;
+  }
+}

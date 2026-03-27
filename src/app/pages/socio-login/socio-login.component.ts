@@ -3,6 +3,8 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SocioAuthService } from '../../services/socio-auth.service';
 import { SupabaseService } from '../../services/supabase.service';
+import { AuthService } from '../../services/auth.service';
+import { socioSafeReturnUrl } from '../../utils/socio-return-url';
 
 @Component({
   selector: 'app-socio-login',
@@ -30,13 +32,56 @@ export class SocioLoginComponent implements OnInit {
   constructor(
     private socioAuth: SocioAuthService,
     private supabase: SupabaseService,
+    private clubAuth: AuthService,
     private router: Router,
     private route: ActivatedRoute,
     private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
-    void this.socioAuth.init();
+    void this.bootstrap();
+  }
+
+  private async bootstrap(): Promise<void> {
+    await this.socioAuth.init();
+
+    if (this.clubAuth.isAdmin()) {
+      const raw = this.route.snapshot.queryParams['returnUrl'];
+      const url = socioSafeReturnUrl(raw) ?? '/inicio';
+      await this.router.navigateByUrl(url);
+      return;
+    }
+
+    const hash = typeof globalThis !== 'undefined' ? globalThis.location?.hash ?? '' : '';
+    if (hash.includes('type=recovery') || hash.includes('recovery')) {
+      this.aplicarModoDesdeQuery();
+      return;
+    }
+    if (this.enRecuperacionDesdeEmail) {
+      this.aplicarModoDesdeQuery();
+      return;
+    }
+
+    const client = this.supabase.client;
+    if (client && this.isConfigured) {
+      const {
+        data: { session }
+      } = await client.auth.getSession();
+      if (session) {
+        const raw = this.route.snapshot.queryParams['returnUrl'];
+        const url = socioSafeReturnUrl(raw) ?? '/inicio';
+        await this.router.navigateByUrl(url);
+        return;
+      }
+    }
+
+    this.aplicarModoDesdeQuery();
+  }
+
+  private aplicarModoDesdeQuery(): void {
+    if (this.route.snapshot.queryParamMap.get('modo') === 'registro') {
+      this.modo = 'registro';
+    }
   }
 
   get isConfigured(): boolean {
@@ -105,7 +150,8 @@ export class SocioLoginComponent implements OnInit {
         this.error = result.error;
         return;
       }
-      void this.router.navigateByUrl(this.route.snapshot.queryParams['returnUrl'] || '/mi-cuenta');
+      const raw = this.route.snapshot.queryParams['returnUrl'];
+      void this.router.navigateByUrl(socioSafeReturnUrl(raw) ?? '/inicio');
     });
   }
 
@@ -117,6 +163,14 @@ export class SocioLoginComponent implements OnInit {
 
     try {
       if (this.modo === 'login') {
+        if (this.clubAuth.login(this.email.trim(), this.password)) {
+          const returnUrl = socioSafeReturnUrl(this.route.snapshot.queryParams['returnUrl']) ?? '/inicio';
+          this.ngZone.run(() => {
+            this.loading = false;
+          });
+          await this.router.navigateByUrl(returnUrl);
+          return;
+        }
         const result = await this.socioAuth.login(this.email, this.password);
         if (result.error) {
           this.ngZone.run(() => {
@@ -157,7 +211,7 @@ export class SocioLoginComponent implements OnInit {
         }
       }
 
-      const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/mi-cuenta';
+      const returnUrl = socioSafeReturnUrl(this.route.snapshot.queryParams['returnUrl']) ?? '/inicio';
       this.ngZone.run(() => {
         this.loading = false;
       });

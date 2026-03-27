@@ -12,28 +12,10 @@
   </section>
 
   <section class="form-section">
-    <h2>Formulario de inscripción</h2>
-    <p class="info">Completá tus datos y te contactaremos para finalizar el trámite.</p>
-    <form class="socio-form">
-      <div class="form-group">
-        <label for="nombre">Nombre completo</label>
-        <input id="nombre" type="text" placeholder="Tu nombre">
-      </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input id="email" type="email" placeholder="tu@email.com">
-      </div>
-      <div class="form-group">
-        <label for="telefono">Teléfono</label>
-        <input id="telefono" type="tel" placeholder="+54 3463-123456">
-      </div>
-      <div class="form-group">
-        <label for="dni">DNI</label>
-        <input id="dni" type="text" placeholder="Número de documento">
-      </div>
-      <button type="submit" class="btn-primary">Enviar solicitud</button>
-    </form>
+    <h2>Alta online</h2>
+    <p class="info">Creá tu cuenta con email y contraseña; quedás registrado como socio y podés pagar la cuota desde <strong>Pagar cuota</strong> en el menú.</p>
+    <a routerLink="/socios/login" [queryParams]="{ modo: 'registro' }" class="btn-primary btn-alta">Registrarme como socio</a>
   </section>
 </div>
 
-<p class="ya-socio">¿Ya sos socio? <a routerLink="/socios/login">Accedé a tu cuenta</a> para pagar tu cuota.</p>
+<p class="ya-socio">¿Ya tenés cuenta? <a routerLink="/socios/login">Ingresá</a> o usá <strong>Pagar cuota</strong> en el menú.</p>

@@ -201,33 +201,42 @@ export class ResultadosStorageService {
     golesLocal: number,
     golesVisitante: number
   ): Promise<void> {
-    const partidos = [...this.getPartidos()];
-    const idx = partidos.findIndex((p) => partidoCoincideConFixture(p, f));
-    const gl = Math.max(0, Math.min(99, Math.floor(Number(golesLocal)) || 0));
-    const gv = Math.max(0, Math.min(99, Math.floor(Number(golesVisitante)) || 0));
+    await this.upsertResultadosFinalesBatch([{ fixture: f, golesLocal, golesVisitante }]);
+  }
 
-    if (idx >= 0) {
-      partidos[idx] = {
-        ...partidos[idx],
-        local: f.local,
-        visitante: f.visitante,
-        fecha: f.fecha,
-        golesLocal: gl,
-        golesVisitante: gv,
-        estado: 'finalizado',
-        minuto: undefined,
-        liveStartedAt: undefined
-      };
-    } else {
-      partidos.push({
-        id: this.nextId(partidos),
-        local: f.local,
-        visitante: f.visitante,
-        golesLocal: gl,
-        golesVisitante: gv,
-        estado: 'finalizado',
-        fecha: f.fecha
-      });
+  /** Varios partidos en una sola escritura local + una sync a Supabase (si admin). */
+  async upsertResultadosFinalesBatch(
+    updates: { fixture: PartidoFixture; golesLocal: number; golesVisitante: number }[]
+  ): Promise<void> {
+    if (updates.length === 0) return;
+    let partidos = [...this.getPartidos()];
+    for (const { fixture: f, golesLocal, golesVisitante } of updates) {
+      const idx = partidos.findIndex((p) => partidoCoincideConFixture(p, f));
+      const gl = Math.max(0, Math.min(99, Math.floor(Number(golesLocal)) || 0));
+      const gv = Math.max(0, Math.min(99, Math.floor(Number(golesVisitante)) || 0));
+      if (idx >= 0) {
+        partidos[idx] = {
+          ...partidos[idx],
+          local: f.local,
+          visitante: f.visitante,
+          fecha: f.fecha,
+          golesLocal: gl,
+          golesVisitante: gv,
+          estado: 'finalizado',
+          minuto: undefined,
+          liveStartedAt: undefined
+        };
+      } else {
+        partidos.push({
+          id: this.nextId(partidos),
+          local: f.local,
+          visitante: f.visitante,
+          golesLocal: gl,
+          golesVisitante: gv,
+          estado: 'finalizado',
+          fecha: f.fecha
+        });
+      }
     }
     await this.savePartidos(partidos);
   }

@@ -1,6 +1,6 @@
 <div class="app">
   <header class="header">
-    <a routerLink="/inicio" class="logo" (click)="closeMenu()">
+    <a [routerLink]="socioAuth.sesionActiva() || auth.isAdmin() ? '/inicio' : '/socios/login'" class="logo" (click)="closeMenu()">
       <img src="images/escudo-cac.png" alt="Escudo CAC" class="logo-img" width="48" height="48" />
       <span class="logo-text logo-full">{{ clubName }}</span>
       <span class="logo-text logo-short" style="color:black">{{ clubShort }}</span>
@@ -26,19 +26,22 @@
     ></div>
 
     <nav class="nav" [class.open]="menuOpen">
-      <a routerLink="/inicio" routerLinkActive="active" (click)="closeMenu()">Inicio</a>
-      <a routerLink="/noticias" routerLinkActive="active" (click)="closeMenu()">Noticias</a>
-      <a routerLink="/resultados" routerLinkActive="active" (click)="closeMenu()">Resultados</a>
-      <a routerLink="/fixture" routerLinkActive="active" (click)="closeMenu()">Fixture</a>
-      <a routerLink="/galeria" routerLinkActive="active" (click)="closeMenu()">Galería</a>
-      <a routerLink="/plantel" routerLinkActive="active" (click)="closeMenu()">Plantel</a>
-      <a routerLink="/socios" routerLinkActive="active" (click)="closeMenu()">Hacerse Socio</a>
-      <a routerLink="/mi-cuenta" routerLinkActive="active" class="nav-socio" (click)="closeMenu()">Mi Cuenta</a>
-
-      @if (auth.isAdmin()) {
-        <button type="button" class="nav-admin" (click)="logout(); closeMenu()">Salir (admin)</button>
-      } @else {
-        <a routerLink="/admin/login" class="nav-admin-link" (click)="closeMenu()">Admin</a>
+      @if (socioAuth.sesionActiva() || auth.isAdmin()) {
+        <a routerLink="/inicio" routerLinkActive="active" (click)="closeMenu()">Inicio</a>
+        <a routerLink="/noticias" routerLinkActive="active" (click)="closeMenu()">Noticias</a>
+        <a routerLink="/resultados" routerLinkActive="active" (click)="closeMenu()">Resultados</a>
+        <a routerLink="/fixture" routerLinkActive="active" (click)="closeMenu()">Fixture</a>
+        <a routerLink="/galeria" routerLinkActive="active" (click)="closeMenu()">Galería</a>
+        <a routerLink="/plantel" routerLinkActive="active" (click)="closeMenu()">Plantel</a>
+        @if (auth.isAdmin()) {
+          <a routerLink="/admin/socios" routerLinkActive="active" (click)="closeMenu()">Socios</a>
+        }
+        <div class="nav-actions">
+          @if (socioAuth.sesionActiva()) {
+            <a routerLink="/mi-cuenta" routerLinkActive="active" class="nav-pagar-cuota" (click)="closeMenu()">Pagar cuota</a>
+          }
+          <button type="button" class="nav-salir" (click)="salir()">Salir</button>
+        </div>
       }
     </nav>
   </header>

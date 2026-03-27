@@ -1,8 +1,102 @@
 <h1>Noticias</h1>
 <p class="subtitle">Últimas novedades del club</p>
 
+@if (noticiasStore.cargando()) {
+  <p class="cargando-noticias">Cargando…</p>
+}
+
+@if (noticiasStore.loadError(); as errLoad) {
+  <p class="aviso-noticias" role="alert">{{ errLoad }}</p>
+}
+
+@if (auth.isAdmin() && !noticiasStore.cargando()) {
+  <button
+    type="button"
+    class="fab-noticias"
+    (click)="abrirNuevaNoticia()"
+    aria-label="Nueva noticia"
+    title="Nueva noticia"
+  >
+    +
+  </button>
+}
+
+@if (auth.isAdmin() && mostrarFormNuevaNoticia) {
+  <div
+    class="noticias-modal-backdrop"
+    (click)="cerrarNuevaNoticia()"
+    aria-hidden="true"
+  ></div>
+  <div
+    class="noticias-modal-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="titulo-nueva-noticia"
+  >
+    <div class="noticias-modal-header">
+      <h2 id="titulo-nueva-noticia" class="admin-noticias-titulo">Nueva noticia</h2>
+      <button
+        type="button"
+        class="noticias-modal-cerrar"
+        (click)="cerrarNuevaNoticia()"
+        aria-label="Cerrar"
+      >
+        ×
+      </button>
+    </div>
+    <div class="noticias-modal-body">
+      
+      @if (noticiasStore.saveError(); as errSave) {
+        <p class="aviso-noticias aviso-error" role="alert">{{ errSave }}</p>
+      }
+      @if (formError) {
+        <p class="aviso-noticias aviso-error" role="alert">{{ formError }}</p>
+      }
+      @if (mensajeAdmin && !formError && !noticiasStore.saveError()) {
+        <p class="aviso-noticias aviso-ok" role="status">{{ mensajeAdmin }}</p>
+      }
+      <div class="admin-noticias-grid">
+        <label class="field">
+          <span>Título</span>
+          <input type="text" [(ngModel)]="nuevaTitulo" name="nTitulo" placeholder="Ej: Victoria frente a…" />
+        </label>
+        <label class="field field-fecha">
+          <span>Fecha</span>
+          <input type="text" [(ngModel)]="nuevaFecha" name="nFecha" placeholder="2025-03-20" />
+        </label>
+        <label class="field field-full">
+          <span>Resumen</span>
+          <textarea [(ngModel)]="nuevaResumen" name="nResumen" rows="3" placeholder="Texto corto que se ve en la tarjeta"></textarea>
+        </label>
+        <label class="field field-full">
+          <span>Intro (opcional, nota larga)</span>
+          <textarea [(ngModel)]="nuevaIntro" name="nIntro" rows="2" placeholder="Párrafo inicial si usás lista de logros"></textarea>
+        </label>
+        <label class="field field-full">
+          <span>Logros (opcional, uno por línea)</span>
+          <textarea [(ngModel)]="nuevaLogrosRaw" name="nLogros" rows="4" placeholder="🏆 Campeón…"></textarea>
+        </label>
+        <label class="field field-full">
+          <span>Cierre (opcional)</span>
+          <textarea [(ngModel)]="nuevaCierre" name="nCierre" rows="2"></textarea>
+        </label>
+      </div>
+      <div class="admin-noticias-acciones">
+        <button
+          type="button"
+          class="btn-publicar"
+          (click)="publicarNoticia()"
+          [disabled]="guardandoNube"
+        >
+          {{ guardandoNube ? 'Publicando…' : 'Publicar noticia' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
 <div class="noticias-grid">
-  @for (noticia of noticias; track noticia.id) {
+  @for (noticia of noticiasStore.lista(); track noticia.id) {
     <article class="noticia-card" [class.noticia-extendida]="noticia.logros?.length">
       <div class="noticia-placeholder" aria-hidden="true"></div>
       <div class="noticia-content">

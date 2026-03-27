@@ -56,9 +56,6 @@
     <div class="vista-panel" role="tabpanel" aria-labelledby="tab-posiciones">
       <section class="bloque-posiciones" aria-labelledby="titulo-posiciones">
         <h2 id="titulo-posiciones" class="posiciones-titulo">Tabla de posiciones</h2>
-        <p class="posiciones-hint">
-          Se calcula sola con el calendario y los resultados guardados en la nube (no tiene tabla propia ni botón de guardar).
-        </p>
 
         @if (!hayPartidosEnTabla) {
           <p class="posiciones-vacia">
@@ -107,65 +104,98 @@
   @if (vista === 'fixture') {
     <div class="vista-panel" role="tabpanel" aria-labelledby="tab-fixture">
       <div class="fixture-list">
-        @for (fecha of fechas; track fecha) {
-          <section class="fecha-section">
-            <h2 class="fecha-titulo">{{ fecha }}</h2>
-            <div class="partidos-fecha">
-              @for (p of partidosPorFecha(fecha); track p.local + p.visitante + p.fecha) {
-                <div class="partido-linea" [class.con-resultado]="tieneMarcador(p)">
-                  <span class="equipo equipo-local">{{ p.local }}</span>
+        @for (fecha of fechas; track fecha; let i = $index) {
+          <section
+            class="fecha-accordion"
+            [class.is-open]="isFechaAccordionOpen(fecha)"
+          >
+            <h2 class="fecha-accordion-header">
+              <button
+                type="button"
+                class="fecha-accordion-trigger"
+                [id]="'ac-fixture-trigger-' + i"
+                [attr.aria-expanded]="isFechaAccordionOpen(fecha)"
+                [attr.aria-controls]="'ac-fixture-panel-' + i"
+                (click)="toggleFechaAccordion(fecha)"
+              >
+                <span class="fecha-accordion-label">Fecha {{ i + 1 }} - {{ fecha }}</span>
+                <span class="fecha-accordion-chevron" aria-hidden="true"></span>
+              </button>
+            </h2>
+            @if (isFechaAccordionOpen(fecha)) {
+              <div
+                class="fecha-accordion-panel"
+                [id]="'ac-fixture-panel-' + i"
+                role="region"
+                [attr.aria-labelledby]="'ac-fixture-trigger-' + i"
+              >
+                <div class="partidos-fecha">
+                  @for (p of partidosPorFecha(fecha); track p.local + p.visitante + p.fecha) {
+                    <div class="partido-linea" [class.con-resultado]="tieneMarcador(p)">
+                      <span class="equipo equipo-local">{{ p.local }}</span>
 
-                  @if (!auth.isAdmin()) {
-                    <div class="marcador">
-                      @if (partidoPara(p); as partido) {
-                        @if (partido.estado === 'finalizado' || partido.estado === 'en-vivo') {
-                          <span class="badges">
-                            @if (partido.estado === 'en-vivo') {
-                              <span class="badge-live">EN VIVO</span>
+                      @if (!auth.isAdmin()) {
+                        <div class="marcador">
+                          @if (partidoPara(p); as partido) {
+                            @if (partido.estado === 'finalizado' || partido.estado === 'en-vivo') {
+                              <span class="badges">
+                                @if (partido.estado === 'en-vivo') {
+                                  <span class="badge-live">EN VIVO</span>
+                                }
+                                @if (partido.estado === 'finalizado') {
+                                  <span class="badge-final">FINAL</span>
+                                }
+                              </span>
+                              <span class="goles">{{ partido.golesLocal }} - {{ partido.golesVisitante }}</span>
+                            } @else {
+                              <span class="sin-marcador">vs</span>
                             }
-                            @if (partido.estado === 'finalizado') {
-                              <span class="badge-final">FINAL</span>
-                            }
-                          </span>
-                          <span class="goles">{{ partido.golesLocal }} - {{ partido.golesVisitante }}</span>
-                        } @else {
-                          <span class="sin-marcador">vs</span>
-                        }
+                          } @else {
+                            <span class="sin-marcador">vs</span>
+                          }
+                        </div>
                       } @else {
-                        <span class="sin-marcador">vs</span>
+                        <div class="marcador-admin">
+                          <input
+                            type="number"
+                            class="input-gol"
+                            min="0"
+                            max="99"
+                            [(ngModel)]="drafts[rowKey(p)].gl"
+                            [name]="'gl-' + rowKey(p)"
+                            aria-label="Goles local"
+                          />
+                          <span class="sep">-</span>
+                          <input
+                            type="number"
+                            class="input-gol"
+                            min="0"
+                            max="99"
+                            [(ngModel)]="drafts[rowKey(p)].gv"
+                            [name]="'gv-' + rowKey(p)"
+                            aria-label="Goles visitante"
+                          />
+                        </div>
                       }
-                    </div>
-                  } @else {
-                    <div class="marcador-admin">
-                      <input
-                        type="number"
-                        class="input-gol"
-                        min="0"
-                        max="99"
-                        [(ngModel)]="drafts[rowKey(p)].gl"
-                        [name]="'gl-' + rowKey(p)"
-                        aria-label="Goles local"
-                      />
-                      <span class="sep">-</span>
-                      <input
-                        type="number"
-                        class="input-gol"
-                        min="0"
-                        max="99"
-                        [(ngModel)]="drafts[rowKey(p)].gv"
-                        [name]="'gv-' + rowKey(p)"
-                        aria-label="Goles visitante"
-                      />
-                      <button type="button" class="btn-guardar-final" (click)="guardarFinal(p)">
-                        Guardar final
-                      </button>
+
+                      <span class="equipo equipo-visit">{{ p.visitante }}</span>
                     </div>
                   }
-
-                  <span class="equipo equipo-visit">{{ p.visitante }}</span>
                 </div>
-              }
-            </div>
+                @if (auth.isAdmin()) {
+                  <div class="fecha-guardar-wrap">
+                    <button
+                      type="button"
+                      class="btn-guardar-fecha"
+                      (click)="guardarFecha(fecha)"
+                      [disabled]="guardandoFecha === fecha"
+                    >
+                      {{ guardandoFecha === fecha ? 'Guardando…' : 'Guardar resultados' }}
+                    </button>
+                  </div>
+                }
+              </div>
+            }
           </section>
         }
       </div>

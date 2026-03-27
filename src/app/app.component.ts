@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
+import { SocioAuthService } from './services/socio-auth.service';
 
 @Component({
   selector: 'app-root',
@@ -14,10 +15,19 @@ export class AppComponent {
   clubShort = 'CAC';
   menuOpen = false;
 
-  constructor(public auth: AuthService) {}
+  constructor(
+    public auth: AuthService,
+    public socioAuth: SocioAuthService,
+    private router: Router
+  ) {
+    void this.socioAuth.init();
+  }
 
-  logout() {
+  async salir(): Promise<void> {
     this.auth.logout();
+    await this.socioAuth.logout();
+    this.closeMenu();
+    await this.router.navigateByUrl('/socios/login');
   }
 
   toggleMenu() {

@@ -13,11 +13,19 @@ import { AuthService } from '../../services/auth.service';
       <div class="login-card">
         <img src="images/escudo-cac.png" alt="CAC" class="login-escudo">
         <h1>Admin</h1>
-        <p class="subtitle">Ingresá tu contraseña para editar contenido</p>
+        <p class="subtitle">Usuario y contraseña para editar contenido</p>
         @if (error) {
           <p class="error">{{ error }}</p>
         }
         <form (ngSubmit)="onSubmit()">
+          <input
+            type="text"
+            [(ngModel)]="username"
+            name="username"
+            placeholder="Usuario"
+            autocomplete="username"
+            class="input"
+          />
           <input
             type="password"
             [(ngModel)]="password"
@@ -103,6 +111,7 @@ import { AuthService } from '../../services/auth.service';
   `]
 })
 export class AdminLoginComponent {
+  username = '';
   password = '';
   error = '';
 
@@ -113,10 +122,10 @@ export class AdminLoginComponent {
 
   onSubmit() {
     this.error = '';
-    if (this.auth.login(this.password)) {
+    if (this.auth.login(this.username, this.password)) {
       this.router.navigate(['/resultados']);
     } else {
-      this.error = 'Contraseña incorrecta';
+      this.error = 'Usuario o contraseña incorrectos';
     }
   }
 }

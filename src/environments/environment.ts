@@ -1,5 +1,6 @@
 export const environment = {
   production: false,
+  adminUsername: 'admin',
   adminPassword: 'cac2025',
   supabaseUrl: 'https://nvsvzppzqjvlkhrsrdtt.supabase.co',
   supabaseKey:

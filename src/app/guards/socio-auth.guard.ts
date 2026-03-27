@@ -1,13 +1,18 @@
 import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
+import { AuthService } from '../services/auth.service';
+import { socioSafeReturnUrl } from '../utils/socio-return-url';
 
-export const socioAuthGuard: CanActivateFn = () => {
+export const socioAuthGuard: CanActivateFn = (_route, state) => {
+  const clubAuth = inject(AuthService);
+  if (clubAuth.isAdmin()) return true;
+
   const supabase = inject(SupabaseService);
   const router = inject(Router);
 
   if (!supabase.isConfigured) {
-    router.navigate(['/socios'], { queryParams: { error: 'config' } });
+    router.navigate(['/socios/login'], { queryParams: { error: 'config' } });
     return false;
   }
 
@@ -15,7 +20,8 @@ export const socioAuthGuard: CanActivateFn = () => {
   if (!client) return false;
   return client.auth.getSession().then(({ data: { session } }) => {
     if (session) return true;
-    router.navigate(['/socios/login'], { queryParams: { returnUrl: '/mi-cuenta' } });
+    const returnUrl = socioSafeReturnUrl(state.url) ?? '/inicio';
+    router.navigate(['/socios/login'], { queryParams: { returnUrl } });
     return false;
   });
 };

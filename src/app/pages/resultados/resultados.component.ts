@@ -30,7 +30,8 @@ export class ResultadosComponent implements OnInit, OnDestroy {
   fixtureCanalense: PartidoFixture[] = [];
   /** Lo que se muestra: cada fila del fixture CAC + merge con resultado guardado */
   partidosVista: PartidoResultadoVista[] = [];
-  cargandoFixture = false;
+  /** Hasta que terminen nube (resultados) + fixture */
+  cargandoResultados = true;
   avisoFixture: string | null = null;
   showForm = false;
   editingPartido: Partido | null = null;
@@ -53,21 +54,24 @@ export class ResultadosComponent implements OnInit, OnDestroy {
   };
 
   async ngOnInit() {
-    await this.resultadosStorage.hydrateFromRemote();
-    await this.cargarFixtureCanalense();
-    this.cargarPartidos();
-    this.rebuildVista();
-    this.iniciarReloj();
+    this.cargandoResultados = true;
+    try {
+      await this.resultadosStorage.hydrateFromRemote();
+      await this.cargarFixtureCanalense();
+      this.cargarPartidos();
+      this.rebuildVista();
+      this.iniciarReloj();
+    } finally {
+      this.cargandoResultados = false;
+    }
   }
 
   private async cargarFixtureCanalense() {
-    this.cargandoFixture = true;
     const res = await this.fixtureService.loadFixture();
     this.avisoFixture = res.aviso;
     this.fixtureCanalense = res.partidos.filter(
       (p) => p.local.includes('Canalense') || p.visitante.includes('Canalense')
     );
-    this.cargandoFixture = false;
   }
 
   private rebuildVista() {

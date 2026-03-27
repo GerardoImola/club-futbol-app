@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { PartidoFixture } from '../../data/fixture.data';
@@ -34,6 +34,10 @@ export class FixtureComponent implements OnInit {
 
   /** Evita doble clic al publicar fixture */
   publicandoFixture = false;
+  /** Fecha cuyo bloque se está guardando (botón por fecha) */
+  guardandoFecha: string | null = null;
+  /** Acordeón: qué fechas muestran el panel (por defecto la primera) */
+  fechaExpanded = signal<Record<string, boolean>>({});
 
   constructor(
     public readonly fixtureService: FixtureService,
@@ -49,7 +53,23 @@ export class FixtureComponent implements OnInit {
     this.aviso = res.aviso;
     this.refreshPartidos();
     this.initDrafts();
+    this.initFechaAccordion();
     this.cargando = false;
+  }
+
+  private initFechaAccordion(): void {
+    const fechas = [...new Set(this.fixture.map((x) => x.fecha))];
+    const next: Record<string, boolean> = {};
+    if (fechas.length > 0) next[fechas[0]] = true;
+    this.fechaExpanded.set(next);
+  }
+
+  toggleFechaAccordion(fecha: string): void {
+    this.fechaExpanded.update((m) => ({ ...m, [fecha]: !m[fecha] }));
+  }
+
+  isFechaAccordionOpen(fecha: string): boolean {
+    return !!this.fechaExpanded()[fecha];
   }
 
   rowKey(p: PartidoFixture): string {
@@ -82,17 +102,31 @@ export class FixtureComponent implements OnInit {
     return !!x && (x.estado === 'finalizado' || x.estado === 'en-vivo');
   }
 
-  async guardarFinal(p: PartidoFixture): Promise<void> {
-    const k = this.rowKey(p);
-    const d = this.drafts[k];
-    if (!d) return;
-    await this.resultadosStorage.upsertResultadoFinal(p, d.gl, d.gv);
-    this.refreshPartidos();
-    const partido = this.partidoPara(p);
-    this.drafts[k] = {
-      gl: partido?.golesLocal ?? d.gl,
-      gv: partido?.golesVisitante ?? d.gv
-    };
+  async guardarFecha(fecha: string): Promise<void> {
+    if (!this.auth.isAdmin()) return;
+    const lista = this.partidosPorFecha(fecha);
+    if (lista.length === 0) return;
+    const updates = lista.map((p) => {
+      const k = this.rowKey(p);
+      const d = this.drafts[k] ?? { gl: 0, gv: 0 };
+      return { fixture: p, golesLocal: d.gl, golesVisitante: d.gv };
+    });
+    this.guardandoFecha = fecha;
+    try {
+      await this.resultadosStorage.upsertResultadosFinalesBatch(updates);
+      this.refreshPartidos();
+      for (const p of lista) {
+        const k = this.rowKey(p);
+        const partido = this.partidoPara(p);
+        const d = this.drafts[k];
+        this.drafts[k] = {
+          gl: partido?.golesLocal ?? d?.gl ?? 0,
+          gv: partido?.golesVisitante ?? d?.gv ?? 0
+        };
+      }
+    } finally {
+      this.guardandoFecha = null;
+    }
   }
 
   get fechas(): string[] {
@@ -130,6 +164,7 @@ export class FixtureComponent implements OnInit {
       this.fixture = res.partidos;
       this.aviso = res.aviso;
       this.initDrafts();
+      this.initFechaAccordion();
     }
     this.publicandoFixture = false;
   }

@@ -29,14 +29,17 @@
     <span class="icon">👥</span>
     <h3>Plantel</h3>
   </a>
-  <a routerLink="/socios" class="card highlight">
-    <span class="icon">🎫</span>
-    <h3>Hacerse Socio</h3>
-    <p>Sumate a la hinchada</p>
-  </a>
-  <a routerLink="/mi-cuenta" class="card">
-    <span class="icon">💳</span>
-    <h3>Mi Cuenta</h3>
-    <p>Pagar cuota de socio</p>
-  </a>
+  @if (!auth.isAdmin()) {
+    <a routerLink="/mi-cuenta" class="card">
+      <span class="icon">💳</span>
+      <h3>Pagar cuota</h3>
+      <p>Cuotas y medios de pago</p>
+    </a>
+  } @else {
+    <a routerLink="/admin/socios" class="card highlight">
+      <span class="icon">📋</span>
+      <h3>Socios</h3>
+      <p>Listado del club</p>
+    </a>
+  }
 </section>

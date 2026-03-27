@@ -1,0 +1,33 @@
+<h1>Socios</h1>
+<p class="subtitle">Listado del club (solo administración)</p>
+
+@if (cargando()) {
+  <p class="estado">Cargando…</p>
+} @else if (error()) {
+  <p class="error" role="alert">{{ error() }}</p>
+} @else if (socios().length === 0) {
+  <p class="vacio">No hay socios registrados.</p>
+} @else {
+  <div class="tabla-wrap">
+    <table class="tabla-socios">
+      <thead>
+        <tr>
+          <th>Nº</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Teléfono</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (s of socios(); track s.id) {
+          <tr>
+            <td class="num">{{ s.numero_socio | number : '1.0-0' }}</td>
+            <td>{{ s.nombre }}</td>
+            <td><a [href]="'mailto:' + s.email">{{ s.email }}</a></td>
+            <td>{{ s.telefono || '—' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

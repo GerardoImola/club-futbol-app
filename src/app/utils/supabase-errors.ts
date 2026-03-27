@@ -101,3 +101,77 @@ export function mensajeErrorRed(err: unknown): string {
   }
   return msg;
 }
+
+/** Mensajes en inglés que devuelve GoTrue / Supabase Auth → español para la UI. */
+const MSJ_AUTH_POR_TEXTO: Record<string, string> = {
+  'invalid login credentials': 'Email o contraseña incorrectos.',
+  'invalid email or password': 'Email o contraseña incorrectos.',
+  'email not confirmed':
+    'Tenés que confirmar el correo antes de ingresar (revisá tu bandeja de entrada o spam).',
+  'user already registered': 'Ese email ya está registrado. Probá ingresar o recuperar la contraseña.',
+  'user already registered.': 'Ese email ya está registrado. Probá ingresar o recuperar la contraseña.',
+  'password should be at least 6 characters': 'La contraseña debe tener al menos 6 caracteres.',
+  'signup is disabled': 'El registro está deshabilitado en el servidor.',
+  'signups not allowed for this instance': 'El registro está deshabilitado en el servidor.',
+  'email rate limit exceeded': 'Demasiados intentos. Esperá unos minutos y probá de nuevo.',
+  'for security purposes, you can only request this after': 'Por seguridad, esperá un momento antes de volver a pedir el enlace.',
+  'token has expired or is invalid': 'El enlace expiró o no es válido. Pedí uno nuevo.',
+  'new password should be different from the old password': 'La contraseña nueva tiene que ser distinta de la anterior.',
+  'unable to validate email address: invalid format': 'El email no tiene un formato válido.',
+  'signup requires a valid password': 'La contraseña no es válida para el registro.',
+  'invalid grant: user credentials are invalid': 'Email o contraseña incorrectos.',
+  'invalid refresh token': 'La sesión expiró. Volvé a ingresar.',
+  'jwt expired': 'La sesión expiró. Volvé a ingresar.'
+};
+
+/** Por código de error de Auth cuando existe (más estable que el texto en inglés). */
+const MSJ_AUTH_POR_CODIGO: Record<string, string> = {
+  invalid_credentials: 'Email o contraseña incorrectos.',
+  email_not_confirmed:
+    'Tenés que confirmar el correo antes de ingresar (revisá tu bandeja de entrada o spam).',
+  user_not_found: 'No encontramos una cuenta con ese email.',
+  user_already_exists: 'Ese email ya está registrado.',
+  signup_disabled: 'El registro está deshabilitado en el servidor.',
+  weak_password: 'La contraseña es demasiado débil. Usá más caracteres o combiná letras y números.',
+  same_password: 'La contraseña nueva tiene que ser distinta de la anterior.',
+  otp_expired: 'El código expiró. Pedí uno nuevo.',
+  over_email_send_rate_limit: 'Demasiados correos enviados. Esperá unos minutos.',
+  over_request_rate_limit: 'Demasiados intentos. Esperá un momento e intentá de nuevo.'
+};
+
+/**
+ * Traduce mensajes de `auth.*` de Supabase a español. Si ya viene en español u otro texto
+ * desconocido, lo devuelve igual.
+ */
+export function traducirErrorAuthSupabase(error: { message: string; code?: string }): string {
+  const code = (error.code || '').toLowerCase().trim();
+  if (code && MSJ_AUTH_POR_CODIGO[code]) {
+    return MSJ_AUTH_POR_CODIGO[code];
+  }
+  const msg = (error.message || '').trim();
+  if (!msg) return 'Ocurrió un error. Intentá de nuevo.';
+  const key = msg.toLowerCase().trim();
+  if (MSJ_AUTH_POR_TEXTO[key]) {
+    return MSJ_AUTH_POR_TEXTO[key];
+  }
+  const lower = key;
+  if (lower.includes('invalid login') || lower.includes('invalid credentials')) {
+    return 'Email o contraseña incorrectos.';
+  }
+  if (lower.includes('email not confirmed')) {
+    return MSJ_AUTH_POR_TEXTO['email not confirmed'];
+  }
+  if (lower.includes('password') && lower.includes('at least') && lower.includes('6')) {
+    return 'La contraseña debe tener al menos 6 caracteres.';
+  }
+  if (lower.includes('already been registered') || lower.includes('user already registered')) {
+    return MSJ_AUTH_POR_TEXTO['user already registered'];
+  }
+  if (lower.includes('rate limit')) {
+    return 'Demasiados intentos. Esperá unos minutos y probá de nuevo.';
+  }
+  if (lower.includes('invalid email')) {
+    return 'El email no tiene un formato válido.';
+  }
+  return msg;
+}

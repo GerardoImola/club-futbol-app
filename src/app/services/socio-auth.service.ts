@@ -1,6 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { SupabaseService } from './supabase.service';
-import { mensajeErrorRed } from '../utils/supabase-errors';
+import { mensajeErrorRed, traducirErrorAuthSupabase } from '../utils/supabase-errors';
 
 export interface Socio {
   id: string;
@@ -19,6 +19,9 @@ export interface Cuota {
   fecha_pago?: string;
 }
 
+/** Monto vigente de la cuota mensual (pesos). Una sola fuente para alta en BD y pantalla. */
+export const MONTO_CUOTA_PESOS = 10000;
+
 @Injectable({ providedIn: 'root' })
 export class SocioAuthService {
   socio = signal<Socio | null>(null);
@@ -30,6 +33,8 @@ export class SocioAuthService {
   cuentaBootstrapDone = signal(false);
   /** Sesión de recuperación: el usuario debe elegir contraseña nueva (enlace del email) */
   enRecuperacionPassword = signal(false);
+  /** Hay sesión JWT en Supabase (alineado con socioAuthGuard) */
+  sesionActiva = signal(false);
 
   isLoggedIn = computed(() => this.socio() !== null);
 
@@ -44,19 +49,24 @@ export class SocioAuthService {
 
     const client = this.supabase.client;
     if (!client) {
+      this.sesionActiva.set(false);
       this.cuentaBootstrapDone.set(true);
       return;
     }
 
-    client.auth.onAuthStateChange(async (event, newSession) => {
+    // No await de cargarSocio: GoTrueClient._notifyAllSubscribers espera a los callbacks;
+    // si la consulta a `socios`/cuotas tarda o falla en red, signInWithPassword quedaría colgado.
+    client.auth.onAuthStateChange((event, newSession) => {
       if (event === 'PASSWORD_RECOVERY') {
         this.enRecuperacionPassword.set(true);
+        this.sesionActiva.set(!!newSession);
         return;
       }
       this.enRecuperacionPassword.set(false);
+      this.sesionActiva.set(!!newSession);
 
       if (newSession?.user) {
-        await this.cargarSocio(newSession.user.id);
+        void this.cargarSocio(newSession.user.id);
       } else {
         this.socio.set(null);
         this.cuotasPagadas = [];
@@ -68,8 +78,9 @@ export class SocioAuthService {
       const {
         data: { session }
       } = await client.auth.getSession();
+      this.sesionActiva.set(!!session);
       if (session?.user) {
-        await this.cargarSocio(session.user.id);
+        void this.cargarSocio(session.user.id);
       }
     } finally {
       this.cuentaBootstrapDone.set(true);
@@ -141,7 +152,7 @@ export class SocioAuthService {
 
     try {
       const { data, error } = await client.auth.signInWithPassword({ email, password });
-      if (error) return { error: error.message };
+      if (error) return { error: traducirErrorAuthSupabase(error) };
       if (!data.user) return { error: 'Error al iniciar sesión' };
       return {};
     } catch (e) {
@@ -177,7 +188,7 @@ export class SocioAuthService {
       return { error: mensajeErrorRed(e) };
     }
 
-    if (error) return { error: error.message };
+    if (error) return { error: traducirErrorAuthSupabase(error) };
     if (!data.user) return { error: 'Error al registrarse' };
 
     // Ideal: trigger en BD (supabase-registro-trigger.sql). Si hay sesión y falló el trigger, insert acá.
@@ -229,7 +240,7 @@ export class SocioAuthService {
       socio_id: userId,
       mes: hoy.getMonth() + 1,
       anio: hoy.getFullYear(),
-      monto: 10000,
+      monto: MONTO_CUOTA_PESOS,
       pagada: false
     });
   }
@@ -243,6 +254,7 @@ export class SocioAuthService {
     this.cuotasPagadas = [];
     this.cuotasAdeudadas = [];
     this.enRecuperacionPassword.set(false);
+    this.sesionActiva.set(false);
 
     const client = this.supabase.client;
     if (!client) return;
@@ -266,7 +278,7 @@ export class SocioAuthService {
       const { error } = await client.auth.resetPasswordForEmail(email.trim(), {
         redirectTo
       });
-      if (error) return { error: error.message };
+      if (error) return { error: traducirErrorAuthSupabase(error) };
       return {};
     } catch (e) {
       return { error: mensajeErrorRed(e) };
@@ -280,7 +292,7 @@ export class SocioAuthService {
     if (password.length < 6) return { error: 'La contraseña debe tener al menos 6 caracteres' };
     try {
       const { error } = await client.auth.updateUser({ password });
-      if (error) return { error: error.message };
+      if (error) return { error: traducirErrorAuthSupabase(error) };
       this.enRecuperacionPassword.set(false);
       const uid = (await client.auth.getUser()).data.user?.id;
       if (uid) await this.cargarSocio(uid);

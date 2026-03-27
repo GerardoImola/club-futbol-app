@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { SocioAuthService, Cuota } from '../../services/socio-auth.service';
+import { SocioAuthService, Cuota, MONTO_CUOTA_PESOS } from '../../services/socio-auth.service';
 
 const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
@@ -13,6 +13,9 @@ const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'O
   styleUrl: './mi-cuenta.component.css'
 })
 export class MiCuentaComponent implements OnInit {
+  /** Cuota mensual vigente (mostrar siempre este valor para pendientes y pago). */
+  readonly montoCuotaPesos = MONTO_CUOTA_PESOS;
+
   constructor(
     public socioAuth: SocioAuthService,
     private router: Router
@@ -36,11 +39,6 @@ export class MiCuentaComponent implements OnInit {
 
   get cuotaPendiente(): boolean {
     return this.cuotasAdeudadas.length > 0;
-  }
-
-  get montoCuota(): number {
-    const c = this.cuotasAdeudadas[0];
-    return c?.monto ?? 10000;
   }
 
   formatearMes(mes: number, anio: number): string {
