@@ -1,10 +1,10 @@
 h1 {
-  color: #1a472a;
+  color: var(--heading);
   margin-bottom: 0.25rem;
 }
 
 .subtitle {
-  color: #666;
+  color: var(--text-muted);
   margin-bottom: 2rem;
 }
 
@@ -22,14 +22,14 @@ h1 {
 }
 
 .beneficios, .form-section {
-  background: white;
+  background: var(--card-bg);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: var(--card-shadow);
 }
 
 .beneficios h2, .form-section h2 {
-  color: #1a472a;
+  color: var(--heading);
   margin-top: 0;
   margin-bottom: 1rem;
 }
@@ -37,12 +37,12 @@ h1 {
 .beneficios ul {
   margin: 0;
   padding-left: 1.25rem;
-  color: #444;
+  color: var(--text-secondary);
   line-height: 1.8;
 }
 
 .info {
-  color: #666;
+  color: var(--text-muted);
   margin-bottom: 1.5rem;
   font-size: 0.9rem;
 }
@@ -61,24 +61,24 @@ h1 {
 
 .form-group label {
   font-weight: 500;
-  color: #333;
+  color: var(--label);
 }
 
 .form-group input {
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-input);
   border-radius: 8px;
   font-size: 1rem;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #1a472a;
+  border-color: var(--primary);
 }
 
 .btn-primary {
-  background: #1a472a;
-  color: white;
+  background: var(--primary);
+  color: var(--on-primary);
   border: none;
   padding: 1rem;
   border-radius: 8px;
@@ -96,16 +96,16 @@ a.btn-primary {
 
 .btn-primary:hover,
 a.btn-primary:hover {
-  background: #2d5a3d;
+  background: var(--primary-hover);
 }
 
 .ya-socio {
   text-align: center;
-  color: #666;
+  color: var(--text-muted);
 }
 
 .ya-socio a {
-  color: #1a472a;
+  color: var(--heading);
   font-weight: 600;
   text-decoration: none;
 }

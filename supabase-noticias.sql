@@ -46,7 +46,7 @@ begin
     raise exception 'Unauthorized' using errcode = '42501';
   end if;
 
-  delete from public.noticias where true;
+  delete from public.noticias where legacy_id is not null;
 
   insert into public.noticias (legacy_id, titulo, resumen, fecha, intro, logros, cierre, orden)
   select

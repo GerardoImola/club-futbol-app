@@ -1,30 +1,120 @@
 <h1>Socios</h1>
-<p class="subtitle">Listado del club (solo administración)</p>
+<p class="subtitle">
+  Solo los socios <strong>con cuota impaga</strong> tienen casilla para seleccionar. Usá <strong>Marcar pendientes como pagadas</strong> con
+  los elegidos. La columna <strong>Cuota</strong> indica el estado según la base.
+</p>
 
 @if (cargando()) {
-  <p class="estado">Cargando…</p>
+  <div class="sk-root socios-sk" role="status" aria-busy="true" aria-label="Cargando socios">
+    <span class="sk-only">Cargando socios</span>
+    <div class="tabla-wrap socios-sk-wrap" aria-hidden="true">
+      <table class="tabla-socios socios-sk-table">
+        <thead>
+          <tr>
+            <th><span class="sk sk-line" style="height: 0.75rem; margin: 0; width: 1.25rem"></span></th>
+            <th><span class="sk sk-line" style="height: 0.75rem; margin: 0; width: 2rem"></span></th>
+            <th><span class="sk sk-line" style="height: 0.75rem; margin: 0; width: 4rem"></span></th>
+            <th><span class="sk sk-line" style="height: 0.75rem; margin: 0; width: 3rem"></span></th>
+            <th><span class="sk sk-line" style="height: 0.75rem; margin: 0; width: 4rem"></span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (n of [1, 2, 3, 4, 5, 6]; track n) {
+            <tr>
+              <td><span class="sk sk-line" style="height: 0.8rem; margin: 0; width: 1rem"></span></td>
+              <td><span class="sk sk-line" style="height: 0.8rem; margin: 0; width: 2.5rem"></span></td>
+              <td><span class="sk sk-line" style="height: 0.8rem; margin: 0; width: 85%"></span></td>
+              <td><span class="sk sk-line" style="height: 0.8rem; margin: 0; width: 60%"></span></td>
+              <td><span class="sk sk-line" style="height: 0.8rem; margin: 0; width: 5rem"></span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
 } @else if (error()) {
   <p class="error" role="alert">{{ error() }}</p>
 } @else if (socios().length === 0) {
   <p class="vacio">No hay socios registrados.</p>
 } @else {
+  @if (!resumenCuotasDisponible()) {
+    <p class="aviso-sql" role="status">
+      La función <code>list_socios_admin</code> en Supabase aún no devuelve el resumen de cuotas. Ejecutá
+      <strong>supabase-socios-admin-rpc.sql</strong> o el bloque actualizado de <strong>supabase-resultados.sql</strong> en el SQL
+      Editor y usá <strong>Reload schema</strong> (Data API). Sin ese dato no hay casillas de selección; la columna Cuota muestra N/D.
+    </p>
+  }
+
+  @if (mensajeExito()) {
+    <p class="aviso-exito" role="status">{{ mensajeExito() }}</p>
+  }
+
+  @if (cantidadSociosSeleccionados() > 0) {
+    <div class="barra-seleccion" role="region" aria-label="Acciones sobre socios seleccionados">
+      <span class="barra-seleccion-texto">{{ cantidadSociosSeleccionados() }} socio(s) seleccionado(s)</span>
+      <div class="barra-seleccion-acciones">
+        <button
+          type="button"
+          class="btn-bulk"
+          (click)="marcarPendientesSeleccionados()"
+          [disabled]="bulkSociosBusy()"
+        >
+          {{ bulkSociosBusy() ? 'Procesando…' : 'Marcar pendientes como pagadas' }}
+        </button>
+        <button type="button" class="btn-bulk-sec" (click)="limpiarSeleccionSocios()" [disabled]="bulkSociosBusy()">
+          Quitar selección
+        </button>
+      </div>
+    </div>
+  }
+
   <div class="tabla-wrap">
     <table class="tabla-socios">
       <thead>
         <tr>
+          <th class="col-check">
+            @if (resumenCuotasDisponible() && haySociosConDeuda()) {
+              <input
+                type="checkbox"
+                [checked]="todosPendientesSeleccionados()"
+                (change)="toggleSeleccionarTodosPendientes()"
+                aria-label="Seleccionar o deseleccionar todos los socios con cuota pendiente"
+              />
+            }
+          </th>
           <th>Nº</th>
           <th>Nombre</th>
-          <th>Email</th>
           <th>Teléfono</th>
+          <th>Cuota</th>
         </tr>
       </thead>
       <tbody>
         @for (s of socios(); track s.id) {
           <tr>
+            <td class="col-check">
+              @if (socioConDeuda(s)) {
+                <input
+                  type="checkbox"
+                  [checked]="socioEstaSeleccionado(s.id)"
+                  (change)="toggleSocioSeleccion(s, $event)"
+                  [attr.aria-label]="'Seleccionar socio con deuda ' + s.nombre"
+                />
+              }
+            </td>
             <td class="num">{{ s.numero_socio | number : '1.0-0' }}</td>
             <td>{{ s.nombre }}</td>
-            <td><a [href]="'mailto:' + s.email">{{ s.email }}</a></td>
             <td>{{ s.telefono || '—' }}</td>
+            <td class="col-estado-cuota">
+              @if (etiquetaEstadoCuota(s) === 'nd') {
+                <span class="badge badge-neutro" title="Actualizá list_socios_admin en Supabase">{{ textoEstadoCuota(s) }}</span>
+              } @else if (etiquetaEstadoCuota(s) === 'sin') {
+                <span class="badge badge-neutro">{{ textoEstadoCuota(s) }}</span>
+              } @else if (etiquetaEstadoCuota(s) === 'pagado') {
+                <span class="badge badge-ok">{{ textoEstadoCuota(s) }}</span>
+              } @else {
+                <span class="badge badge-pend">{{ textoEstadoCuota(s) }}</span>
+              }
+            </td>
           </tr>
         }
       </tbody>

@@ -2,7 +2,22 @@
 <p class="subtitle">Últimas novedades del club</p>
 
 @if (noticiasStore.cargando()) {
-  <p class="cargando-noticias">Cargando…</p>
+  <div class="sk-root sk-noticias-wrap" role="status" aria-busy="true" aria-label="Cargando noticias">
+    <span class="sk-only">Cargando noticias</span>
+    <div class="noticias-grid">
+      @for (n of [1, 2, 3]; track n) {
+        <article class="noticia-card noticia-card--sk" aria-hidden="true">
+          <div class="noticia-placeholder sk"></div>
+          <div class="noticia-content">
+            <span class="sk sk-line sk-line--short" style="margin-bottom: 0.65rem"></span>
+            <span class="sk sk-line sk-line--long" style="height: 1.1rem; margin-bottom: 0.65rem"></span>
+            <span class="sk sk-line sk-line--long"></span>
+            <span class="sk sk-line sk-line--med" style="margin-top: 0.5rem"></span>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
 }
 
 @if (noticiasStore.loadError(); as errLoad) {

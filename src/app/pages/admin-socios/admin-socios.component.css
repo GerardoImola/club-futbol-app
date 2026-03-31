@@ -1,17 +1,12 @@
 h1 {
-  color: #1a472a;
+  color: var(--heading);
   margin-bottom: 0.25rem;
 }
 
 .subtitle {
-  color: #666;
+  color: var(--text-muted);
   margin-bottom: 1.5rem;
   font-size: 0.95rem;
-}
-
-.estado {
-  color: #555;
-  font-size: 1.05rem;
 }
 
 .error {
@@ -23,32 +18,157 @@ h1 {
 }
 
 .vacio {
-  color: #666;
+  color: var(--text-muted);
+}
+
+.aviso-exito {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  border-radius: 10px;
+  color: #1b5e20;
+  font-size: 0.9rem;
+}
+
+.aviso-sql {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  background: #fff8e6;
+  border: 1px solid #ffc107;
+  border-radius: 10px;
+  color: #664d00;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.aviso-sql code {
+  font-size: 0.8rem;
+  background: rgba(0, 0, 0, 0.06);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+
+.barra-seleccion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  padding: 0.85rem 1.1rem;
+  background: #f0f6f2;
+  border: 1px solid var(--hint-border);
+  border-radius: 12px;
+}
+
+.barra-seleccion-texto {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.barra-seleccion-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.btn-bulk {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--on-primary);
+  background: var(--primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-bulk:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.btn-bulk:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.btn-bulk-sec {
+  padding: 0.5rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--heading);
+  background: var(--card-bg);
+  border: 2px solid var(--primary);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-bulk-sec:hover:not(:disabled) {
+  background: var(--surface-muted);
+}
+
+.tabla-socios .col-check {
+  width: 2.5rem;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.tabla-socios .col-check input {
+  width: 1.1rem;
+  height: 1.1rem;
+  cursor: pointer;
+  accent-color: var(--heading);
+}
+
+.tabla-socios .col-estado-cuota {
+  white-space: nowrap;
 }
 
 .tabla-wrap {
-  overflow-x: auto;
-  background: white;
+  overflow-x: hidden;
+  max-width: 100%;
+  background: var(--card-bg);
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--card-shadow);
 }
 
 .tabla-socios {
   width: 100%;
+  max-width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 0.9rem;
+}
+
+/* Nº y Cuota acotados; nombre y teléfono pueden partir línea para evitar scroll horizontal */
+.tabla-socios th:nth-child(2),
+.tabla-socios td:nth-child(2) {
+  width: 3.25rem;
+}
+
+.tabla-socios th:nth-child(5),
+.tabla-socios td:nth-child(5) {
+  width: 7.25rem;
+}
+
+.tabla-socios td:nth-child(3),
+.tabla-socios td:nth-child(4) {
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .tabla-socios th,
 .tabla-socios td {
   padding: 0.75rem 1rem;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border);
 }
 
 .tabla-socios th {
   background: #f4f7f5;
-  color: #1a472a;
+  color: var(--heading);
   font-weight: 600;
 }
 
@@ -57,13 +177,31 @@ h1 {
   white-space: nowrap;
 }
 
-.tabla-socios a {
-  color: #1a472a;
-  word-break: break-all;
+.tabla-socios tbody tr:hover {
+  background: var(--surface-elevated);
 }
 
-.tabla-socios tbody tr:hover {
-  background: #fafcfb;
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.55rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.badge-ok {
+  background: #d4edda;
+  color: #155724;
+}
+
+.badge-pend {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.badge-neutro {
+  background: #e9ecef;
+  color: #495057;
 }
 
 @media (max-width: 600px) {

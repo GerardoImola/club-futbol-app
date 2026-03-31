@@ -7,7 +7,7 @@
 }
 
 .login-card {
-  background: white;
+  background: var(--card-bg);
   padding: 2rem;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -25,26 +25,26 @@
 
 .login-card h1 {
   margin: 0 0 0.25rem;
-  color: #1a472a;
+  color: var(--heading);
   font-size: 1.5rem;
 }
 
 .subtitle {
-  color: #666;
+  color: var(--text-muted);
   font-size: 0.9rem;
   margin: 0 0 1rem;
 }
 
 .admin-hint {
   font-size: 0.8rem;
-  color: #555;
+  color: var(--text-secondary);
   line-height: 1.4;
   margin: 0 0 1rem;
   text-align: left;
   background: #f4f7f5;
   border-radius: 8px;
   padding: 0.65rem 0.75rem;
-  border: 1px solid #e0e8e3;
+  border: 1px solid var(--hint-border);
 }
 
 .admin-hint code {
@@ -55,7 +55,7 @@
 }
 
 .admin-hint a {
-  color: #1a472a;
+  color: var(--heading);
   font-weight: 600;
   text-decoration: none;
 }
@@ -103,7 +103,7 @@
 .form-group label {
   display: block;
   font-weight: 500;
-  color: #333;
+  color: var(--label);
   margin-bottom: 0.35rem;
   font-size: 0.9rem;
 }
@@ -111,7 +111,7 @@
 .form-group input {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-input);
   border-radius: 8px;
   font-size: 1rem;
 }
@@ -138,30 +138,30 @@
   border: none;
   border-radius: 6px;
   background: transparent;
-  color: #555;
+  color: var(--text-secondary);
   cursor: pointer;
 }
 
 .toggle-password:hover {
-  color: #1a472a;
+  color: var(--heading);
   background: rgba(26, 71, 42, 0.08);
 }
 
 .toggle-password:focus-visible {
-  outline: 2px solid #1a472a;
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #1a472a;
+  border-color: var(--primary);
 }
 
 .btn {
   width: 100%;
   padding: 1rem;
-  background: #1a472a;
-  color: white;
+  background: var(--primary);
+  color: var(--on-primary);
   border: none;
   border-radius: 8px;
   font-size: 1rem;
@@ -178,7 +178,7 @@
 .btn-link {
   background: none;
   border: none;
-  color: #1a472a;
+  color: var(--heading);
   font-size: 0.9rem;
   cursor: pointer;
   margin-top: 1rem;
@@ -195,12 +195,12 @@
 .volver-hint {
   margin-top: 1.5rem;
   font-size: 0.85rem;
-  color: #666;
+  color: var(--text-muted);
   line-height: 1.45;
 }
 
 .volver-hint a {
-  color: #1a472a;
+  color: var(--heading);
   font-weight: 600;
   text-decoration: none;
 }

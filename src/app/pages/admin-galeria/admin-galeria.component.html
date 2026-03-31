@@ -36,7 +36,19 @@
       <section class="seccion seccion--sin-borde-top" aria-labelledby="titulo-existentes">
         <h2 id="titulo-existentes" class="seccion-titulo">Álbumes</h2>
         @if (cargandoLista) {
-          <p class="hint" role="status">Cargando…</p>
+          <div class="sk-root admin-galeria-sk" role="status" aria-busy="true" aria-label="Cargando álbumes">
+            <span class="sk-only">Cargando álbumes</span>
+            @for (a of [1, 2]; track a) {
+              <article class="album-admin admin-galeria-sk-album" aria-hidden="true">
+                <span class="sk sk-line sk-line--med" style="height: 2.25rem; margin-bottom: 1rem"></span>
+                <div class="admin-galeria-sk-thumbs">
+                  @for (t of [1, 2, 3, 4]; track t) {
+                    <span class="sk sk-thumb"></span>
+                  }
+                </div>
+              </article>
+            }
+          </div>
         } @else if (!galeria.isReady()) {
           <p class="hint">Supabase no configurado.</p>
         } @else if (albumes.length === 0) {

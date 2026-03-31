@@ -7,15 +7,25 @@
   </p>
 }
 
-@if (cargandoRemoto) {
-  <p class="galeria-aviso" role="status">Cargando álbumes…</p>
-}
 @if (avisoRemoto) {
   <p class="galeria-aviso galeria-aviso--warn">{{ avisoRemoto }}</p>
 }
 
 <section class="mas-momentos" aria-labelledby="titulo-mas-momentos">
   <h2 id="titulo-mas-momentos" class="seccion-subtitulo">Momentos</h2>
+  @if (cargandoRemoto) {
+    <div class="sk-root galeria-sk" role="status" aria-busy="true" aria-label="Cargando álbumes">
+      <span class="sk-only">Cargando álbumes</span>
+      <div class="galeria-grid">
+        @for (n of [1, 2, 3, 4, 5, 6]; track n) {
+          <div class="foto-card galeria-sk-card" aria-hidden="true">
+            <div class="foto-media sk galeria-sk-media"></div>
+            <span class="sk sk-line sk-line--med galeria-sk-titulo-line"></span>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
   <div class="galeria-grid">
     @for (foto of fotos(); track foto.id) {
       @if (foto.imagenes.length) {
@@ -45,6 +55,7 @@
       }
     }
   </div>
+  }
 </section>
 
 @if (lightbox) {

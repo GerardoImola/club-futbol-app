@@ -2,7 +2,32 @@
 <p class="subtitle">Tu estado de socio y medios de pago</p>
 
 @if (!socioAuth.cuentaBootstrapDone()) {
-  <p class="cargando">Cargando...</p>
+  <div class="sk-root mi-cuenta-sk" role="status" aria-busy="true" aria-label="Cargando tu cuenta">
+    <span class="sk-only">Cargando tu cuenta</span>
+    <div class="cuenta-content mi-cuenta-sk-inner" aria-hidden="true">
+      <section class="estado-socio mi-cuenta-sk-section">
+        <span class="sk sk-line sk-line--med" style="height: 1.25rem; margin-bottom: 1rem"></span>
+        <span class="sk sk-line sk-line--long"></span>
+        <span class="sk sk-line sk-line--long"></span>
+        <span class="sk sk-btn" style="margin-top: 1rem; max-width: 100%"></span>
+      </section>
+      <section class="cuotas-section mi-cuenta-sk-section">
+        <span class="sk sk-line sk-line--short" style="height: 1.1rem; margin-bottom: 0.75rem"></span>
+        <span class="sk sk-line sk-line--long"></span>
+        <span class="sk sk-line sk-line--long" style="width: 70%"></span>
+      </section>
+      <section class="cuotas-section mi-cuenta-sk-section">
+        <span class="sk sk-line sk-line--short" style="height: 1.1rem; margin-bottom: 0.75rem"></span>
+        <span class="sk sk-line sk-line--long"></span>
+      </section>
+      <section class="pago-section mi-cuenta-sk-section">
+        <span class="sk sk-line sk-line--med" style="height: 1.2rem; margin-bottom: 0.75rem"></span>
+        <span class="sk sk-line" style="height: 2rem; width: 40%; margin-bottom: 1rem"></span>
+        <span class="sk sk-btn"></span>
+        <span class="sk sk-btn" style="margin-top: 0.75rem"></span>
+      </section>
+    </div>
+  </div>
 } @else if (!socio) {
   <div class="sin-sesion">
     <p>No hay una sesión activa o tu cuenta no está vinculada como socio.</p>

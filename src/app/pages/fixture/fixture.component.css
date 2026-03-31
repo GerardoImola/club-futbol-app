@@ -14,19 +14,65 @@
   color: #721c24;
 }
 
-.cargando {
-  color: #666;
-  padding: 2rem;
-  text-align: center;
+.fixture-sk {
+  margin-bottom: 1rem;
+}
+
+.fixture-sk-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.25rem;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--hint-border);
+}
+
+.fixture-sk-tab {
+  flex: 1;
+  border-radius: 0;
+}
+
+.fixture-sk-tab:first-child {
+  border-right: 1px solid var(--hint-border);
+}
+
+.fixture-sk-fecha {
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
+.fixture-sk-fecha-bar {
+  display: block;
+  height: 3rem;
+  border-radius: 0;
+}
+
+.fixture-sk-partidos {
+  padding: 0.75rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fixture-sk-linea {
+  height: 2.5rem;
+  border-radius: 8px;
+}
+
+.fixture-sk-linea--short {
+  width: 70%;
 }
 
 h1 {
-  color: #1a472a;
+  color: var(--heading);
   margin-bottom: 0.25rem;
 }
 
 .subtitle {
-  color: #666;
+  color: var(--text-muted);
   margin-bottom: 1.5rem;
 }
 
@@ -42,8 +88,8 @@ h1 {
   padding: 0.55rem 1rem;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #fff;
-  background: #1a472a;
+  color: var(--on-primary);
+  background: var(--primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -58,7 +104,7 @@ h1 {
   flex: 1;
   min-width: 200px;
   font-size: 0.8rem;
-  color: #555;
+  color: var(--text-secondary);
   line-height: 1.4;
   margin: 0;
 }
@@ -69,7 +115,7 @@ h1 {
 
 .posiciones-hint {
   font-size: 0.85rem;
-  color: #555;
+  color: var(--text-secondary);
   margin: 0 0 1rem;
   line-height: 1.45;
 }
@@ -80,7 +126,7 @@ h1 {
   margin-bottom: 1.25rem;
   border-radius: 10px;
   overflow: hidden;
-  border: 2px solid #1a472a;
+  border: 2px solid var(--primary);
   max-width: 420px;
 }
 
@@ -90,27 +136,27 @@ h1 {
   font-size: 0.95rem;
   font-weight: 700;
   border: none;
-  background: #fff;
-  color: #1a472a;
+  background: var(--card-bg);
+  color: var(--heading);
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
 
 .tab-btn + .tab-btn {
-  border-left: 2px solid #1a472a;
+  border-left: 2px solid var(--primary);
 }
 
 .tab-btn:hover:not(.active) {
-  background: #f0f5f0;
+  background: var(--surface-hover);
 }
 
 .tab-btn.active {
-  background: #1a472a;
-  color: #fff;
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 .tab-btn:focus-visible {
-  outline: 2px solid #609171;
+  outline: 2px solid var(--accent-mid);
   outline-offset: 2px;
   z-index: 1;
 }
@@ -125,22 +171,22 @@ h1 {
 
 .posiciones-titulo {
   font-size: 1.15rem;
-  color: #1a472a;
+  color: var(--heading);
   margin: 0 0 0.35rem;
   font-weight: 700;
 }
 
 .posiciones-leyenda {
   font-size: 0.78rem;
-  color: #666;
+  color: var(--text-muted);
   margin: 0 0 1rem;
   line-height: 1.4;
 }
 
 .posiciones-vacia {
   font-size: 0.9rem;
-  color: #666;
-  background: #f5f9f6;
+  color: var(--text-muted);
+  background: var(--surface-soft);
   padding: 1rem 1.25rem;
   border-radius: 10px;
   margin: 0;
@@ -150,19 +196,19 @@ h1 {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--card-shadow);
 }
 
 .tabla-posiciones {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.82rem;
-  background: white;
+  background: var(--card-bg);
 }
 
 .tabla-posiciones thead {
-  background: #1a472a;
-  color: #fff;
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 .tabla-posiciones th {
@@ -180,14 +226,14 @@ h1 {
 .tabla-posiciones td {
   padding: 0.5rem 0.35rem;
   text-align: center;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border);
 }
 
 .tabla-posiciones td.col-eq {
   text-align: left;
   padding-left: 0.75rem;
   font-weight: 500;
-  color: #222;
+  color: var(--text);
   max-width: 140px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -195,18 +241,18 @@ h1 {
 
 .tabla-posiciones .col-pos {
   width: 2rem;
-  color: #666;
+  color: var(--text-muted);
   font-weight: 600;
 }
 
 .tabla-posiciones .col-pts {
   font-weight: 800;
-  color: #1a472a;
+  color: var(--heading);
   font-size: 0.95rem;
 }
 
 .tabla-posiciones tbody tr:hover {
-  background: #f8faf8;
+  background: var(--surface-elevated);
 }
 
 .tabla-posiciones .fila-canalense {
@@ -239,9 +285,9 @@ h1 {
 .fecha-accordion {
   margin-bottom: 0.85rem;
   border-radius: 12px;
-  border: 1px solid #dce8df;
+  border: 1px solid var(--hint-border);
   overflow: hidden;
-  background: #fff;
+  background: var(--card-bg);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
@@ -256,7 +302,7 @@ h1 {
   justify-content: space-between;
   gap: 1rem;
   padding: 0.95rem 1.1rem;
-  background: #f8faf9;
+  background: var(--surface-elevated);
   border: none;
   cursor: pointer;
   font: inherit;
@@ -265,31 +311,31 @@ h1 {
 }
 
 .fecha-accordion-trigger:hover {
-  background: #eef4f0;
+  background: var(--surface-muted);
 }
 
 .fecha-accordion-trigger:focus-visible {
-  outline: 2px solid #609171;
+  outline: 2px solid var(--accent-mid);
   outline-offset: -2px;
 }
 
 .fecha-accordion.is-open .fecha-accordion-trigger {
-  background: #fff;
-  border-bottom: 1px solid #e8eeea;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
 }
 
 .fecha-accordion-label {
   font-size: 1rem;
   font-weight: 700;
-  color: #1a472a;
+  color: var(--heading);
 }
 
 .fecha-accordion-chevron {
   display: block;
   width: 0.55rem;
   height: 0.55rem;
-  border-right: 2.5px solid #1a472a;
-  border-bottom: 2.5px solid #1a472a;
+  border-right: 2.5px solid var(--primary);
+  border-bottom: 2.5px solid var(--primary);
   transform: rotate(-45deg);
   transition: transform 0.2s ease;
   flex-shrink: 0;
@@ -302,11 +348,11 @@ h1 {
 }
 
 .fecha-accordion-panel {
-  background: #fff;
+  background: var(--card-bg);
 }
 
 .partidos-fecha {
-  background: white;
+  background: var(--card-bg);
   border-radius: 0;
   padding: 1rem;
   box-shadow: none;
@@ -317,20 +363,20 @@ h1 {
   align-items: center;
   gap: 0.5rem;
   padding: 0.6rem 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border);
   flex-wrap: wrap;
 }
 
 .partido-linea.con-resultado .goles {
   font-weight: 700;
-  color: #1a472a;
+  color: var(--heading);
 }
 
 .hint-admin {
   display: block;
   margin-top: 0.5rem;
   font-size: 0.85rem;
-  color: #555;
+  color: var(--text-secondary);
 }
 
 .partido-linea:last-child {
@@ -350,7 +396,7 @@ h1 {
 }
 
 .vs {
-  color: #999;
+  color: var(--text-muted-2);
   font-size: 0.75rem;
   flex-shrink: 0;
 }
@@ -375,7 +421,7 @@ h1 {
   font-size: 0.65rem;
   font-weight: 700;
   background: #c62828;
-  color: white;
+  color: var(--on-primary);
   padding: 0.1rem 0.35rem;
   border-radius: 4px;
 }
@@ -384,7 +430,7 @@ h1 {
   font-size: 0.65rem;
   font-weight: 600;
   background: #e8f5e9;
-  color: #1a472a;
+  color: var(--heading);
   padding: 0.1rem 0.35rem;
   border-radius: 4px;
 }
@@ -409,22 +455,22 @@ h1 {
 .input-gol {
   width: 2.75rem;
   padding: 0.35rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-soft);
   border-radius: 6px;
   text-align: center;
   font-size: 0.95rem;
 }
 
 .sep {
-  color: #888;
+  color: var(--text-muted-2);
   font-weight: 600;
 }
 
 .fecha-guardar-wrap {
   margin: 0;
   padding: 0.85rem 1rem 1rem;
-  border-top: 1px solid #e8eeea;
-  background: #fafcfb;
+  border-top: 1px solid var(--border);
+  background: var(--surface-elevated);
 }
 
 .btn-guardar-fecha {
@@ -432,15 +478,15 @@ h1 {
   padding: 0.65rem 1rem;
   font-size: 0.9rem;
   font-weight: 600;
-  background: #1a472a;
-  color: white;
+  background: var(--primary);
+  color: var(--on-primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
 }
 
 .btn-guardar-fecha:hover:not(:disabled) {
-  background: #2d5a3d;
+  background: var(--primary-hover);
 }
 
 .btn-guardar-fecha:disabled {
@@ -462,7 +508,7 @@ h1 {
 }
 
 .ver-resultados a {
-  color: #1a472a;
+  color: var(--heading);
   font-weight: 600;
   text-decoration: none;
 }

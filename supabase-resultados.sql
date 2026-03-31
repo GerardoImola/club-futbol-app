@@ -68,8 +68,8 @@ begin
     raise exception 'Unauthorized' using errcode = '42501';
   end if;
 
-  -- Algunos proyectos (p. ej. reglas de Supabase) rechazan DELETE sin WHERE
-  delete from public.partido_resultados where true;
+  -- No usar "where true": en Supabase/Postgres puede fallar con "DELETE requires a WHERE clause"
+  delete from public.partido_resultados where legacy_id is not null;
 
   insert into public.partido_resultados (
     legacy_id, local, visitante, fecha, goles_local, goles_visitante, estado, minuto, live_started_at
@@ -93,14 +93,18 @@ grant execute on function public.sync_partido_resultados(text, jsonb) to anon, a
 
 -- Listado de socios para la pantalla Admin → Socios (misma clave que resultados_admin_secret).
 -- Requiere tabla public.socios (p. ej. supabase-setup-completo.sql).
+-- Si cambian las columnas devueltas, hay que DROP antes (42P13).
+drop function if exists public.list_socios_admin(text);
+
 create or replace function public.list_socios_admin(p_admin_password text)
 returns table (
   id uuid,
   numero_socio integer,
   nombre text,
-  email text,
   telefono text,
-  created_at timestamptz
+  created_at timestamptz,
+  cuotas_pendientes bigint,
+  cuotas_total bigint
 )
 language plpgsql
 security definer
@@ -118,7 +122,14 @@ begin
   end if;
 
   return query
-  select soc.id, soc.numero_socio, soc.nombre, soc.email, soc.telefono, soc.created_at
+  select
+    soc.id,
+    soc.numero_socio,
+    soc.nombre,
+    soc.telefono,
+    soc.created_at,
+    (select count(*)::bigint from public.cuotas c where c.socio_id = soc.id and c.pagada = false),
+    (select count(*)::bigint from public.cuotas c where c.socio_id = soc.id)
   from public.socios soc
   order by soc.numero_socio;
 end;

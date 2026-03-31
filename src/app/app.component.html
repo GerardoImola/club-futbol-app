@@ -3,47 +3,65 @@
     <a [routerLink]="socioAuth.sesionActiva() || auth.isAdmin() ? '/inicio' : '/socios/login'" class="logo" (click)="closeMenu()">
       <img src="images/escudo-cac.png" alt="Escudo CAC" class="logo-img" width="48" height="48" />
       <span class="logo-text logo-full">{{ clubName }}</span>
-      <span class="logo-text logo-short" style="color:black">{{ clubShort }}</span>
+      <span class="logo-text logo-short">{{ clubShort }}</span>
     </a>
 
-    <button
-      type="button"
-      class="menu-toggle"
-      (click)="toggleMenu()"
-      [attr.aria-expanded]="menuOpen"
-      aria-label="Abrir o cerrar menú"
-    >
-      <span class="hamburger" [class.open]="menuOpen"></span>
-      <span class="hamburger" [class.open]="menuOpen"></span>
-      <span class="hamburger" [class.open]="menuOpen"></span>
-    </button>
-
-    <div
-      class="nav-backdrop"
-      [class.open]="menuOpen"
-      (click)="closeMenu()"
-      aria-hidden="true"
-    ></div>
-
-    <nav class="nav" [class.open]="menuOpen">
-      @if (socioAuth.sesionActiva() || auth.isAdmin()) {
-        <a routerLink="/inicio" routerLinkActive="active" (click)="closeMenu()">Inicio</a>
-        <a routerLink="/noticias" routerLinkActive="active" (click)="closeMenu()">Noticias</a>
-        <a routerLink="/resultados" routerLinkActive="active" (click)="closeMenu()">Resultados</a>
-        <a routerLink="/fixture" routerLinkActive="active" (click)="closeMenu()">Fixture</a>
-        <a routerLink="/galeria" routerLinkActive="active" (click)="closeMenu()">Galería</a>
-        <a routerLink="/plantel" routerLinkActive="active" (click)="closeMenu()">Plantel</a>
-        @if (auth.isAdmin()) {
-          <a routerLink="/admin/socios" routerLinkActive="active" (click)="closeMenu()">Socios</a>
-        }
-        <div class="nav-actions">
-          @if (socioAuth.sesionActiva()) {
-            <a routerLink="/mi-cuenta" routerLinkActive="active" class="nav-pagar-cuota" (click)="closeMenu()">Pagar cuota</a>
+    @if (menuShellVisible()) {
+      <nav class="nav" [class.open]="menuOpen">
+        @if (socioAuth.sesionActiva() || auth.isAdmin()) {
+          <a routerLink="/inicio" routerLinkActive="active" (click)="closeMenu()">Inicio</a>
+          <a routerLink="/noticias" routerLinkActive="active" (click)="closeMenu()">Noticias</a>
+          <a routerLink="/resultados" routerLinkActive="active" (click)="closeMenu()">Resultados</a>
+          <a routerLink="/fixture" routerLinkActive="active" (click)="closeMenu()">Fixture</a>
+          <a routerLink="/galeria" routerLinkActive="active" (click)="closeMenu()">Galería</a>
+          <a routerLink="/plantel" routerLinkActive="active" (click)="closeMenu()">Plantel</a>
+          @if (auth.isAdmin()) {
+            <a routerLink="/admin/socios" routerLinkActive="active" (click)="closeMenu()">Socios</a>
           }
-          <button type="button" class="nav-salir" (click)="salir()">Salir</button>
-        </div>
+          <div class="nav-actions">
+            @if (socioAuth.sesionActiva()) {
+              <a routerLink="/mi-cuenta" routerLinkActive="active" class="nav-pagar-cuota" (click)="closeMenu()">Pagar cuota</a>
+            }
+            <button type="button" class="nav-salir" (click)="salir()">Salir</button>
+          </div>
+        }
+      </nav>
+    }
+
+    <div class="header-tools">
+      <button
+        type="button"
+        class="theme-toggle"
+        (click)="theme.toggle()"
+        [attr.aria-pressed]="theme.dark()"
+        [attr.aria-label]="theme.dark() ? 'Activar modo claro' : 'Activar modo oscuro'"
+        title="{{ theme.dark() ? 'Modo claro' : 'Modo oscuro' }}"
+      >
+        <span class="theme-toggle-icon" aria-hidden="true">{{ theme.dark() ? '☀' : '🌙' }}</span>
+      </button>
+      @if (menuShellVisible()) {
+        <button
+          type="button"
+          class="menu-toggle"
+          (click)="toggleMenu()"
+          [attr.aria-expanded]="menuOpen"
+          aria-label="Abrir o cerrar menú"
+        >
+          <span class="hamburger" [class.open]="menuOpen"></span>
+          <span class="hamburger" [class.open]="menuOpen"></span>
+          <span class="hamburger" [class.open]="menuOpen"></span>
+        </button>
       }
-    </nav>
+    </div>
+
+    @if (menuShellVisible()) {
+      <div
+        class="nav-backdrop"
+        [class.open]="menuOpen"
+        (click)="closeMenu()"
+        aria-hidden="true"
+      ></div>
+    }
   </header>
 
   <main class="main">

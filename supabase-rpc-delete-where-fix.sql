@@ -1,4 +1,5 @@
 -- Parche si al guardar resultados o fixture aparece: "DELETE requires a WHERE clause"
+-- (Supabase no acepta DELETE ... WHERE true como WHERE “real”.)
 -- Ejecutá TODO este archivo una vez en Supabase → SQL Editor.
 
 create or replace function public.sync_partido_resultados(
@@ -21,7 +22,7 @@ begin
     raise exception 'Unauthorized' using errcode = '42501';
   end if;
 
-  delete from public.partido_resultados where true;
+  delete from public.partido_resultados where legacy_id is not null;
 
   insert into public.partido_resultados (
     legacy_id, local, visitante, fecha, goles_local, goles_visitante, estado, minuto, live_started_at
@@ -60,7 +61,7 @@ begin
     raise exception 'Unauthorized' using errcode = '42501';
   end if;
 
-  delete from public.fixture_partidos where true;
+  delete from public.fixture_partidos where orden is not null;
 
   insert into public.fixture_partidos (fecha, local, visitante, orden)
   select

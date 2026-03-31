@@ -25,7 +25,23 @@
 }
 
 @if (cargando) {
-  <p class="cargando">Cargando fixture...</p>
+  <div class="sk-root fixture-sk" role="status" aria-busy="true" aria-label="Cargando fixture">
+    <span class="sk-only">Cargando fixture</span>
+    <div class="fixture-sk-tabs">
+      <span class="sk sk-pill fixture-sk-tab"></span>
+      <span class="sk sk-pill fixture-sk-tab"></span>
+    </div>
+    @for (n of [1, 2, 3, 4]; track n) {
+      <div class="fixture-sk-fecha" aria-hidden="true">
+        <span class="sk fixture-sk-fecha-bar"></span>
+        <div class="fixture-sk-partidos">
+          <span class="sk fixture-sk-linea"></span>
+          <span class="sk fixture-sk-linea"></span>
+          <span class="sk fixture-sk-linea fixture-sk-linea--short"></span>
+        </div>
+      </div>
+    }
+  </div>
 } @else {
   <div class="vista-tabs" role="tablist" aria-label="Elegir vista">
     <button

@@ -1,9 +1,11 @@
 .hero {
   text-align: center;
   padding: 2rem 1rem;
-  background: linear-gradient(135deg, #ffffff 0%, #609171 100%);
+  background: linear-gradient(135deg, var(--header-grad-1) 0%, var(--header-grad-2) 100%);
   border-radius: 12px;
   margin-bottom: 1.5rem;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .hero-escudo {
@@ -16,27 +18,31 @@
 .hero h1 {
   font-size: 1.75rem;
   margin: 0 0 0.5rem;
+  color: var(--text);
 }
 
 .hero p {
   font-size: 1rem;
   opacity: 0.9;
   margin: 0;
+  color: var(--text-muted);
 }
 
 .quick-links {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .card {
-  background: white;
+  background: var(--card-bg);
   padding: 1.25rem 1rem;
   border-radius: 12px;
   text-decoration: none;
   color: inherit;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: var(--card-shadow);
   transition: transform 0.2s, box-shadow 0.2s;
   display: flex;
   flex-direction: column;
@@ -47,7 +53,7 @@
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
 }
 
 .card .icon {
@@ -58,13 +64,13 @@
 .card h3 {
   margin: 0 0 0.25rem;
   font-size: 0.95rem;
-  color: #1a472a;
+  color: var(--heading);
 }
 
 .card p {
   margin: 0;
   font-size: 0.75rem;
-  color: #666;
+  color: var(--text-muted);
 }
 
 @media (min-width: 480px) {
@@ -107,7 +113,7 @@
   }
 
   .quick-links {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr));
     gap: 1.5rem;
   }
 
@@ -125,8 +131,8 @@
 }
 
 .card.highlight {
-  border: 2px solid #609171;
-  background: linear-gradient(135deg, #ffffff 0%, #a5baac 100%);
+  border: 2px solid var(--accent-mid);
+  background: linear-gradient(135deg, var(--card-bg) 0%, var(--surface-muted) 100%);
 }
 
 .card-con-imagen {

@@ -1,21 +1,21 @@
 h1 {
-  color: #1a472a;
+  color: var(--heading);
   margin-bottom: 0.25rem;
 }
 
 .cargando {
-  color: #666;
+  color: var(--text-muted);
   padding: 2rem;
   text-align: center;
 }
 
 .sin-sesion {
-  background: #f5f9f6;
-  border: 1px solid #cfe8d4;
+  background: var(--surface-soft);
+  border: 1px solid var(--hint-border);
   border-radius: 12px;
   padding: 1.5rem 1.25rem;
   text-align: center;
-  color: #444;
+  color: var(--text-secondary);
 }
 
 .sin-sesion p {
@@ -25,19 +25,19 @@ h1 {
 .btn-ingresar {
   display: inline-block;
   padding: 0.65rem 1.25rem;
-  background: #1a472a;
-  color: #fff;
+  background: var(--primary);
+  color: var(--on-primary);
   text-decoration: none;
   border-radius: 8px;
   font-weight: 600;
 }
 
 .btn-ingresar:hover {
-  background: #2d5a3d;
+  background: var(--primary-hover);
 }
 
 .subtitle {
-  color: #666;
+  color: var(--text-muted);
   margin-bottom: 2rem;
 }
 
@@ -48,14 +48,14 @@ h1 {
 }
 
 .estado-socio, .pago-section {
-  background: white;
+  background: var(--card-bg);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: var(--card-shadow);
 }
 
 .estado-socio h2, .pago-section h2 {
-  color: #1a472a;
+  color: var(--heading);
   margin-top: 0;
   margin-bottom: 1rem;
 }
@@ -84,12 +84,12 @@ h1 {
 .monto {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1a472a;
+  color: var(--heading);
   margin: 0 0 0.5rem;
 }
 
 .info {
-  color: #666;
+  color: var(--text-muted);
   margin-bottom: 1rem;
 }
 
@@ -103,9 +103,9 @@ h1 {
   width: 100%;
   min-width: 0;
   padding: 1.25rem;
-  border: 2px solid #1a472a;
-  background: white;
-  color: #1a472a;
+  border: 2px solid var(--primary);
+  background: var(--card-bg);
+  color: var(--heading);
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
@@ -118,8 +118,8 @@ h1 {
 }
 
 .metodo-btn:hover {
-  background: #1a472a;
-  color: white;
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 .metodo-icon {
@@ -129,7 +129,7 @@ h1 {
 .nota {
   margin-top: 1.5rem;
   font-size: 0.8rem;
-  color: #888;
+  color: var(--text-muted-2);
 }
 
 @media (min-width: 480px) {

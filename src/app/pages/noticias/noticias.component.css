@@ -1,16 +1,24 @@
 h1 {
-  color: #1a472a;
+  color: var(--heading);
   margin-bottom: 0.25rem;
 }
 
 .subtitle {
-  color: #666;
+  color: var(--text-muted);
   margin-bottom: 2rem;
 }
 
-.cargando-noticias {
-  color: #666;
-  margin-bottom: 1rem;
+.sk-noticias-wrap {
+  margin-bottom: 0.5rem;
+}
+
+.noticia-card--sk .noticia-content {
+  min-height: 5.5rem;
+}
+
+.noticia-card--sk .noticia-placeholder.sk {
+  height: 50px;
+  border-radius: 0;
 }
 
 .aviso-noticias {
@@ -42,8 +50,8 @@ h1 {
   height: 56px;
   border-radius: 50%;
   border: none;
-  background: #1a472a;
-  color: white;
+  background: var(--primary);
+  color: var(--on-primary);
   font-size: 2rem;
   line-height: 1;
   cursor: pointer;
@@ -66,7 +74,7 @@ h1 {
 .noticias-modal-panel {
   position: fixed;
   z-index: 101;
-  background: #f8faf9;
+  background: var(--surface-elevated);
   display: flex;
   flex-direction: column;
   box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.18);
@@ -90,7 +98,7 @@ h1 {
     width: min(520px, calc(100vw - 2rem));
     max-height: 85vh;
     border-radius: 16px;
-    border: 1px solid #dce8df;
+    border: 1px solid var(--hint-border);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
   }
 }
@@ -101,8 +109,8 @@ h1 {
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem 1rem 0.75rem 1.25rem;
-  border-bottom: 1px solid #e0e8e3;
-  background: #fff;
+  border-bottom: 1px solid var(--hint-border);
+  background: var(--card-bg);
   border-radius: 16px 16px 0 0;
   flex-shrink: 0;
 }
@@ -118,7 +126,7 @@ h1 {
   height: 40px;
   border: none;
   background: transparent;
-  color: #1a472a;
+  color: var(--heading);
   font-size: 1.75rem;
   line-height: 1;
   cursor: pointer;
@@ -127,7 +135,7 @@ h1 {
 }
 
 .noticias-modal-cerrar:hover {
-  background: #eef4f0;
+  background: var(--surface-muted);
 }
 
 .noticias-modal-body {
@@ -139,13 +147,13 @@ h1 {
 .admin-noticias-titulo {
   margin: 0;
   font-size: 1.1rem;
-  color: #1a472a;
+  color: var(--heading);
 }
 
 .admin-noticias-hint {
   margin: 0 0 1rem;
   font-size: 0.85rem;
-  color: #555;
+  color: var(--text-secondary);
   line-height: 1.45;
 }
 
@@ -179,13 +187,13 @@ h1 {
 .field span {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #333;
+  color: var(--label);
 }
 
 .field input,
 .field textarea {
   padding: 0.55rem 0.75rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-soft);
   border-radius: 8px;
   font: inherit;
   font-size: 0.95rem;
@@ -199,7 +207,7 @@ h1 {
 .field input:focus,
 .field textarea:focus {
   outline: none;
-  border-color: #1a472a;
+  border-color: var(--primary);
 }
 
 .admin-noticias-acciones {
@@ -213,15 +221,15 @@ h1 {
   padding: 0.75rem 1.1rem;
   font-size: 0.95rem;
   font-weight: 600;
-  color: #fff;
-  background: #1a472a;
+  color: var(--on-primary);
+  background: var(--primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
 }
 
 .btn-publicar:hover:not(:disabled) {
-  background: #2d5a3d;
+  background: var(--primary-hover);
 }
 
 .btn-publicar:disabled {
@@ -236,17 +244,17 @@ h1 {
 }
 
 .noticia-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: var(--card-shadow);
   display: flex;
   flex-direction: column;
 }
 
 .noticia-placeholder {
   height: 50px;
-  background: linear-gradient(135deg, #2d5a3d 0%, #1a472a 100%);
+  background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
 }
 
 .noticia-content {
@@ -255,18 +263,18 @@ h1 {
 
 .fecha {
   font-size: 0.75rem;
-  color: #888;
+  color: var(--text-muted-2);
   text-transform: uppercase;
 }
 
 .noticia-content h3 {
   margin: 0.5rem 0;
-  color: #1a1a1a;
+  color: var(--heading);
 }
 
 .noticia-content p {
   margin: 0;
-  color: #555;
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 
@@ -277,7 +285,7 @@ h1 {
 .logros-lista {
   margin: 0 0 1.25rem;
   padding-left: 1.1rem;
-  color: #333;
+  color: var(--label);
   line-height: 1.65;
 }
 
@@ -286,13 +294,13 @@ h1 {
 }
 
 .logros-lista li::marker {
-  color: #1a472a;
+  color: var(--heading);
 }
 
 .noticia-content .cierre {
   margin-top: 0.5rem;
   font-style: italic;
-  color: #444;
+  color: var(--text-secondary);
 }
 
 .noticia-extendida .noticia-placeholder {
@@ -314,17 +322,17 @@ h1 {
   padding: 0.5rem 1.1rem;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #1a472a;
-  background: #fff;
-  border: 2px solid #1a472a;
+  color: var(--heading);
+  background: var(--card-bg);
+  border: 2px solid var(--primary);
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
 
 .btn-ver-mas:hover {
-  background: #1a472a;
-  color: #fff;
+  background: var(--primary);
+  color: var(--on-primary);
 }
 
 .btn-ver-menos {

@@ -4,7 +4,23 @@
 </p>
 
 @if (cargandoResultados) {
-  <p class="cargando-fixture">Cargando…</p>
+  <div class="sk-root resultados-sk" role="status" aria-busy="true" aria-label="Cargando resultados">
+    <span class="sk-only">Cargando resultados</span>
+    <div class="partidos-list">
+      @for (n of [1, 2, 3, 4]; track n) {
+        <div class="partido-card resultados-sk-card" aria-hidden="true">
+          <div class="resultados-sk-header">
+            <span class="sk sk-line resultados-sk-badge" style="height: 1.35rem; width: 5rem; margin: 0"></span>
+          </div>
+          <div class="resultados-sk-equipos">
+            <span class="sk" style="height: 1rem; flex: 1; max-width: 42%"></span>
+            <span class="sk" style="height: 1.5rem; width: 2.5rem; border-radius: 6px; margin: 0 0.5rem"></span>
+            <span class="sk" style="height: 1rem; flex: 1; max-width: 42%"></span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
 } @else {
 @if (avisoFixture) {
   <p class="aviso-fixture">{{ avisoFixture }}</p>
