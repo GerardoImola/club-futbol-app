@@ -1,5 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { NombreTituloPipe } from '../../pipes/nombre-titulo.pipe';
 import { SupabaseService } from '../../services/supabase.service';
 import { environment } from '../../../environments/environment';
 
@@ -17,7 +18,7 @@ export interface SocioListado {
 @Component({
   selector: 'app-admin-socios',
   standalone: true,
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, NombreTituloPipe],
   templateUrl: './admin-socios.component.html',
   styleUrl: './admin-socios.component.css'
 })

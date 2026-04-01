@@ -1,5 +1,7 @@
 export const environment = {
   production: false,
+  /** WhatsApp del club: solo dígitos con código país (sin +). Ej: 5491123456789. Vacío = abre WhatsApp solo con el texto (elegís el contacto). */
+  clubWhatsApp: '',
   adminUsername: 'admin',
   adminPassword: 'cac2025',
   supabaseUrl: 'https://nvsvzppzqjvlkhrsrdtt.supabase.co',

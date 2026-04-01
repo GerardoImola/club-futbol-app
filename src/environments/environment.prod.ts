@@ -1,5 +1,7 @@
 export const environment = {
   production: true,
+  /** WhatsApp del club: solo dígitos con código país (sin +). Ej: 5491123456789. */
+  clubWhatsApp: '',
   adminUsername: 'admin',
   adminPassword: 'cac2025',
   supabaseUrl: 'https://nvsvzppzqjvlkhrsrdtt.supabase.co',

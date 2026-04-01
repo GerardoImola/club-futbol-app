@@ -97,12 +97,12 @@
                   type="checkbox"
                   [checked]="socioEstaSeleccionado(s.id)"
                   (change)="toggleSocioSeleccion(s, $event)"
-                  [attr.aria-label]="'Seleccionar socio con deuda ' + s.nombre"
+                  [attr.aria-label]="'Seleccionar socio con deuda ' + (s.nombre | nombreTitulo)"
                 />
               }
             </td>
             <td class="num">{{ s.numero_socio | number : '1.0-0' }}</td>
-            <td>{{ s.nombre }}</td>
+            <td>{{ s.nombre | nombreTitulo }}</td>
             <td>{{ s.telefono || '—' }}</td>
             <td class="col-estado-cuota">
               @if (etiquetaEstadoCuota(s) === 'nd') {
